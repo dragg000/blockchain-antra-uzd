@@ -53,3 +53,28 @@ bool Blockchain::add_block(const Block &block)
 
     return true;
 }
+
+void Blockchain::minePendingTransactions(const std::vector<Transaction> &selected)
+{
+    while (true)
+    {
+        if (selected.empty())
+            return;
+
+        Block new_block(
+            Block_h(
+                tip().calculateHash(),
+                "",
+                std::chrono::duration_cast<std::chrono::seconds>(
+                    std::chrono::system_clock::now().time_since_epoch())
+                    .count(),
+                1,
+                difficulty,
+                0),
+            selected);
+
+        new_block.calculateTxRoot();
+
+        new_block.minePendingTransactions(selected);
+    }
+}

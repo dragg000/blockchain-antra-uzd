@@ -20,6 +20,8 @@ public:
     uint32_t get_difficulty() const;
 
     bool add_block(const Block &block); // checks first, then appends
+
+    void minePendingTransactions(const std::vector<Transaction> &selected);
 };
 
 #endif
