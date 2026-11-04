@@ -6,7 +6,6 @@
 #include <vector>
 #include "transaction.hpp"
 
-
 class Block_h
 {
 private:
@@ -63,6 +62,9 @@ public:
 
     Block_h get_header() const { return header; }
     std::vector<Transaction> get_transactions() const { return transactions; }
+
+    Hash calculateHash() const;
+    bool hasValidProofOfWork() const;
 };
 
 #endif
