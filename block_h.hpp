@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdint>
 #include <vector>
+#include <chrono>
 #include "transaction.hpp"
 
 class Block_h
@@ -58,13 +59,18 @@ private:
 
 public:
     Block(Block_h header, std::vector<Transaction> transactions)
-        : header(header), transactions(transactions) {}
+        : header(header), transactions(transactions)
+    {
+        this->header.set_tx_root(calculateTxRoot());
+    }
 
     Block_h get_header() const { return header; }
     std::vector<Transaction> get_transactions() const { return transactions; }
 
     Hash calculateHash() const;
     bool hasValidProofOfWork() const;
+    Hash calculateTxRoot() const;
+    void mine(uint64_t &attempts, double &elapsed_seconds);
 };
 
 #endif

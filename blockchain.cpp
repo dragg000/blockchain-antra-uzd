@@ -9,7 +9,7 @@ Blockchain::Blockchain(uint32_t difficulty) : difficulty(difficulty)
 void Blockchain::create_genesis_block()
 {
     Hash zero_hash = std::string(64, 0);
-    Hash genesis_tx_root = std::string(64, 0);
+    Hash genesis_tx_root = "";
 
     Block_h genesis_header(
         zero_hash,
