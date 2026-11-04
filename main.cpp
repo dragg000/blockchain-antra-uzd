@@ -7,7 +7,7 @@
 struct Selection
 {
     std::vector<Transaction> selected;
-    std::vector<Transaction> set_aside;
+    std::vector<Transaction> rejected;
 };
 
 Selection select_transaction(const std::vector<Transaction>& pool, const BalanceState& balances, std::mt19937_64& rng)
@@ -22,7 +22,7 @@ Selection select_transaction(const std::vector<Transaction>& pool, const Balance
         Transaction transaction = remaining[position];
         remaining.erase(remaining.begin() + position);
         if(tmp.apply(transaction) == false)
-            selection.set_aside.push_back(transaction);
+            selection.rejected.push_back(transaction);
         else
             selection.selected.push_back(transaction);
     }
@@ -39,12 +39,14 @@ int main()
 
     std::vector<User> users = generate_users(user_seed);
     std::vector<Transaction> pool = generate_transactions(transaction_seed, users, transaction_count);
+    std::vector<Transaction> rejected;
     std::mt19937_64 rng(selection_seed);
 
     BalanceState balances(users);
     Blockchain bakugan(3);
     
     Selection selection = select_transaction(pool, balances, rng);
+
 
     return 0;
 }
