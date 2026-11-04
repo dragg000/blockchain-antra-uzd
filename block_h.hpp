@@ -6,11 +6,12 @@
 #include <vector>
 #include "transaction.hpp"
 
+
 class Block_h
 {
 private:
-    std::string prev_hash;
-    std::string tx_root;
+    Hash prev_hash;
+    Hash tx_root;
 
     uint64_t timestamp;
     uint64_t nonce;
@@ -20,8 +21,8 @@ private:
 
 public:
     Block_h(
-        std::string prev_hash,
-        std::string tx_root,
+        Hash prev_hash,
+        Hash tx_root,
         uint64_t timestamp,
         uint32_t version,
         uint32_t difficulty,
@@ -35,15 +36,15 @@ public:
         this->nonce = nonce;
     }
 
-    void set_prev_hash(std::string prev_hash) { this->prev_hash = prev_hash; }
-    void set_tx_root(std::string tx_root) { this->tx_root = tx_root; }
+    void set_prev_hash(Hash prev_hash) { this->prev_hash = prev_hash; }
+    void set_tx_root(Hash tx_root) { this->tx_root = tx_root; }
     void set_timestamp(uint64_t timestamp) { this->timestamp = timestamp; }
     void set_version(uint32_t version) { this->version = version; }
     void set_difficulty(uint32_t difficulty) { this->difficulty = difficulty; }
     void set_nonce(uint64_t nonce) { this->nonce = nonce; }
 
-    std::string get_prev_hash() const { return prev_hash; }
-    std::string get_tx_root() const { return tx_root; }
+    Hash get_prev_hash() const { return prev_hash; }
+    Hash get_tx_root() const { return tx_root; }
     uint64_t get_timestamp() const { return timestamp; }
     uint32_t get_version() const { return version; }
     uint32_t get_difficulty() const { return difficulty; }

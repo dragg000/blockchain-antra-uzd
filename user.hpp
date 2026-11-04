@@ -19,7 +19,7 @@ public:
     {} 
 
     void set_name(string& n) { name = n; }
-    void set_id(u_int64_t& i) { public_key = i; }
+    void set_public_key(Hash& key) { public_key = key; }
     void set_balance(uint64_t& b) { balance = b; }
 
     string get_name() { return name; }
