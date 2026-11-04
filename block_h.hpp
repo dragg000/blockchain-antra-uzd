@@ -65,4 +65,4 @@ public:
     std::vector<Transaction> get_transactions() const { return transactions; }
 };
 
-#endif;
+#endif

@@ -4,6 +4,7 @@
 #include <utility>
 #include <cstdint>
 #include <array>
+#include <vector>
 
 using std::string;
 using Hash = std::string;
@@ -26,3 +27,5 @@ public:
     Hash get_key() { return public_key; }
     uint64_t get_balance() { return balance; }
 };
+
+std::vector<User> generate_users(uint64_t seed);
