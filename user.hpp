@@ -6,7 +6,7 @@
 #include <array>
 
 using std::string;
-using Hash = std::array<uint32_t, 8>;
+using Hash = std::string;
 class User{
 
 private:
