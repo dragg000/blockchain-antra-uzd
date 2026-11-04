@@ -8,18 +8,18 @@
 std::vector<User> generate_users(uint64_t seed)
 {
     const int user_count = 1000;
-    const uint64_t min_balance = 100;
-    const uint64_t max_balance = 1000000;
+    const Bakugan min_balance = 100;
+    const Bakugan max_balance = 1000000;
 
     std::mt19937_64 rng(seed);
     std::vector<User> users;
     users.reserve(user_count);
-    std::set<Hash> used_keys;
+    std::set<Key> used_keys;
 
     for (size_t i = 0; i < user_count; ++i)
     {
         string name = "user" + std::to_string(i);
-        Hash public_key = hashTextUtf8(name);
+        Key public_key = hashTextUtf8(name);
 
         if (!used_keys.insert(public_key).second)
         {

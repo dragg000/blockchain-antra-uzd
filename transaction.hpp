@@ -3,9 +3,9 @@
 
 class Transaction {
 private:
-    Hash sender_key;
-    Hash receiver_key;
-    uint64_t amount;
+    Key sender_key;
+    Key receiver_key;
+    Bakugan amount;
     Hash transaction_id;
     uint64_t sequence;
 
@@ -33,3 +33,5 @@ public:
         std::to_string(amount) + "|" + std::to_string(sequence);
     }
 };
+
+std::vector<Transaction> generate_transactions(uint64_t seed, std::vector<User>& users);
