@@ -5,6 +5,8 @@
 #include <set>
 #include <stdexcept>
 
+//headeriai user.hpp ir transaction.hpp
+
 std::vector<User> generate_users(uint64_t seed)
 {
     const int user_count = 1000;
@@ -34,11 +36,10 @@ std::vector<User> generate_users(uint64_t seed)
     return users;
 }
 
-std::vector<Transaction> generate_transactions(uint64_t seed, std::vector<User>& users)
+std::vector<Transaction> generate_transactions(uint64_t seed, std::vector<User>& users, uint64_t transaction_count)
 {
     uint64_t minimum_transaction = 1;
     std::vector<Transaction> transactions;
-    const uint64_t transaction_count = 10000;
     transactions.reserve(transaction_count);
 
     std::mt19937_64 rng(seed);
