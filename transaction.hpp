@@ -1,4 +1,3 @@
-#include <string>
 #include "user.hpp"
 
 class Transaction {
@@ -6,7 +5,7 @@ private:
     User sender;
     User receiver;
     uint64_t amount;
-    uint64_t transaction_id;
+    Hash transaction_id;
     uint64_t sequence;
 
 public:
@@ -23,6 +22,6 @@ public:
     User get_sender() const { return sender; }
     User get_receiver() const { return receiver; }
     uint64_t get_amount() const { return amount; }
-    uint64_t get_transaction_id() const { return transaction_id; }
+    hash get_transaction_id() const { return transaction_id; }
     uint64_t get_sequence() const { return sequence; }
 };
