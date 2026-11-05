@@ -19,7 +19,7 @@ public:
     const Block &get_block(size_t height) const { return blocks.at(height); }
     size_t height() const;
     uint32_t get_difficulty() const;
-    const vector<Block> get_blocks() { return blocks }
+    const std::vector<Block> &get_blocks() const { return blocks; }
 
     bool add_block(const Block &block); // checks first, then appends
 
