@@ -21,9 +21,10 @@ public:
 
     bool add_block(const Block &block); // checks first, then appends
 
-    void minePendingTransactions(std::vector<Transaction> &selected);
-
-    void validate() const;
+    // mines one block on top of the tip, without adding it to the chain
+    Block minePendingTransactions(const std::vector<Transaction> &selected,
+                                  uint64_t &attempts,
+                                  double &elapsed_seconds) const;
 };
 
 #endif

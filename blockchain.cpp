@@ -54,38 +54,26 @@ bool Blockchain::add_block(const Block &block)
     return true;
 }
 
-void Blockchain::minePendingTransactions(std::vector<Transaction> &selected)
+Block Blockchain::minePendingTransactions(const std::vector<Transaction> &selected,
+                                          uint64_t &attempts,
+                                          double &elapsed_seconds) const
 {
-    while (true)
-    {
-        if (selected.empty())
-            return;
+    // Fixed timestamps keep the hashes the same on every run.
+    const uint64_t base_timestamp = 1000;
+    const uint64_t timestamp = base_timestamp + height() + 1;
 
-        Block new_block(
-            Block_h(
-                tip().calculateHash(),
-                "",
-                std::chrono::duration_cast<std::chrono::seconds>(
-                    std::chrono::system_clock::now().time_since_epoch())
-                    .count(),
-                1,
-                difficulty,
-                0),
-            selected);
+    // The Block constructor fills in tx_root.
+    Block new_block(
+        Block_h(
+            tip().calculateHash(),
+            "",
+            timestamp,
+            1,
+            difficulty,
+            0),
+        selected);
 
-        new_block.calculateTxRoot();
+    new_block.mine(attempts, elapsed_seconds);
 
-        uint64_t attempts = 0;
-        double elapsed_seconds = 0.0;
-
-        new_block.mine(attempts, elapsed_seconds);
-
-        validate();
-
-        add_block(new_block);
-    }
-}
-
-void Blockchain::validate() const
-{
+    return new_block;
 }
