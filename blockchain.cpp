@@ -54,7 +54,7 @@ bool Blockchain::add_block(const Block &block)
     return true;
 }
 
-void Blockchain::minePendingTransactions(const std::vector<Transaction> &selected)
+void Blockchain::minePendingTransactions(std::vector<Transaction> &selected)
 {
     while (true)
     {
@@ -75,6 +75,17 @@ void Blockchain::minePendingTransactions(const std::vector<Transaction> &selecte
 
         new_block.calculateTxRoot();
 
-        new_block.minePendingTransactions(selected);
+        uint64_t attempts = 0;
+        double elapsed_seconds = 0.0;
+
+        new_block.mine(attempts, elapsed_seconds);
+
+        validate();
+
+        add_block(new_block);
     }
+}
+
+void Blockchain::validate() const
+{
 }

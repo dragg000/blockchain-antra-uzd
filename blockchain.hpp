@@ -21,7 +21,9 @@ public:
 
     bool add_block(const Block &block); // checks first, then appends
 
-    void minePendingTransactions(const std::vector<Transaction> &selected);
+    void minePendingTransactions(std::vector<Transaction> &selected);
+
+    void validate() const;
 };
 
 #endif
