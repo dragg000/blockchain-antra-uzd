@@ -15,7 +15,7 @@ void Blockchain::create_genesis_block()
         zero_hash,
         genesis_tx_root,
         0,
-        1,
+        2,
         difficulty,
         0);
 
@@ -55,20 +55,19 @@ bool Blockchain::add_block(const Block &block)
 }
 
 Block Blockchain::minePendingTransactions(const std::vector<Transaction> &selected,
-                                        uint64_t &attempts,
-                                        double &elapsed_seconds) const
+                                          uint64_t &attempts,
+                                          double &elapsed_seconds) const
 {
-    
+
     const uint64_t base_timestamp = 1000;
     const uint64_t timestamp = base_timestamp + height() + 1;
 
-    
     Block new_block(
         Block_h(
             tip().calculateHash(),
             "",
             timestamp,
-            1,
+            2,
             difficulty,
             0),
         selected);
