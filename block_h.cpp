@@ -1,6 +1,9 @@
 #include "block_h.hpp"
 #include "hash.hpp"
-#include <bits/stdc++.h>
+#include <sstream>
+#include <stdexcept>
+
+std::string hexToBytes(const std::string &hex);
 
 Hash Block::calculateHash() const
 {
@@ -64,7 +67,7 @@ Hash Block::calculateTxRoot() const
         if (level.size() % 2 == 1)
             level.push_back(level.back());
 
-        for (int i = 0; i < level.size(); i += 2)
+        for (size_t i = 0; i < level.size(); i += 2)
         {
 
             string left = hexToBytes(level[i]);

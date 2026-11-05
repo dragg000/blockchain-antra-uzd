@@ -4,6 +4,7 @@
 #include "mining.hpp"
 #include "transaction.hpp"
 #include "user.hpp"
+#include "validation.hpp"
 #include <iostream>
 #include <random>
 #include <set>
@@ -272,8 +273,91 @@ static void test_bad_blocks_are_refused()
     CHECK(chain.height() == 1);
 }
 
+static void test_validation()
+{
+    std::cout << "Tikrinimas pries patenkant i fonda\n";
+    const Key key0 = hashTextUtf8("user0");
+    const Key key1 = hashTextUtf8("user1");
+    const Key unknown = hashTextUtf8("nobody");
+    std::vector<User> users = {User("user0", key0, 1000), User("user1", key1, 500)};
+    BalanceState balances(users);
+    std::set<Hash> known_ids;
+
+    CHECK(isHex64(std::string(64, '0')));
+    CHECK(isHex64(key0));
+    CHECK(!isHex64(std::string(63, 'a')));
+    CHECK(!isHex64(std::string(65, 'a')));
+    CHECK(!isHex64(std::string(64, 'A')));
+    CHECK(!isHex64(std::string(64, 'g')));
+
+    const Transaction valid = make_transaction(key0, key1, 100, 0);
+    CHECK(validate_transaction(balances, valid, known_ids) == "");
+
+    // Sumos riba: lygiai visa lesu suma dar tinka, vienu daugiau nebetinka.
+    CHECK(validate_transaction(balances, make_transaction(key0, key1, 1500, 1), known_ids) == "");
+    CHECK(validate_transaction(balances, make_transaction(key0, key1, 1501, 2), known_ids) == "netinkama suma");
+
+    CHECK(validate_transaction(balances, make_transaction("xyz", key1, 100, 3), known_ids) == "netinkamas formatas");
+    CHECK(validate_transaction(balances, make_transaction(key0, "xyz", 100, 4), known_ids) == "netinkamas formatas");
+    CHECK(validate_transaction(balances, make_transaction(key0, key0, 100, 5), known_ids) == "siuntejas ir gavejas sutampa");
+    CHECK(validate_transaction(balances, make_transaction(unknown, key1, 100, 6), known_ids) == "nezinomas dalyvis");
+    CHECK(validate_transaction(balances, make_transaction(key0, unknown, 100, 7), known_ids) == "nezinomas dalyvis");
+    CHECK(validate_transaction(balances, make_transaction(key0, key1, 0, 8), known_ids) == "netinkama suma");
+
+    // uint64_t negali laikyti neigiamos sumos: -1 tampa labai dideliu skaiciumi.
+    const Bakugan negative_one = static_cast<Bakugan>(-1);
+    CHECK(validate_transaction(balances, make_transaction(key0, key1, negative_one, 9), known_ids) == "netinkama suma");
+
+    Transaction changed_amount = valid;
+    changed_amount.set_amount(999);
+    CHECK(validate_transaction(balances, changed_amount, known_ids) == "neteisingas ID");
+
+    Transaction other_id = valid;
+    other_id.set_transaction_id(hashTextUtf8("kitas"));
+    CHECK(validate_transaction(balances, other_id, known_ids) == "neteisingas ID");
+
+    Transaction short_id = valid;
+    short_id.set_transaction_id("abc");
+    CHECK(validate_transaction(balances, short_id, known_ids) == "netinkamas formatas");
+
+    // Tikrinimas nieko nekeicia.
+    CHECK(known_ids.empty());
+    CHECK(balances.get_balance(key0) == 1000);
+
+    // Pasikartojimas fonde.
+    known_ids.insert(valid.get_transaction_id());
+    CHECK(validate_transaction(balances, valid, known_ids) == "pasikartojantis ID");
+
+    // Jau patvirtintos transakcijos pakartojimas: ji iskasta i bloka ir pateikiama dar karta.
+    std::vector<Transaction> pool = {valid};
+    BalanceState confirmed(users);
+    Blockchain chain(1);
+    std::mt19937_64 rng(1);
+    MiningResult result = run_mining(pool, confirmed, chain, rng, false);
+    CHECK(result.included == 1);
+    CHECK(chain.height() == 1);
+    CHECK(validate_transaction(confirmed, valid, known_ids) == "pasikartojantis ID");
+
+    // Visos sugeneruotos transakcijos praeina tikrinima.
+    std::vector<User> generated_users = generate_users(1);
+    std::vector<Transaction> generated = generate_transactions(2, generated_users, 2000);
+    BalanceState generated_balances(generated_users);
+    std::set<Hash> generated_ids;
+    size_t passed = 0;
+    for (const Transaction &transaction : generated)
+    {
+        if (validate_transaction(generated_balances, transaction, generated_ids).empty())
+        {
+            generated_ids.insert(transaction.get_transaction_id());
+            passed++;
+        }
+    }
+    CHECK(passed == generated.size());
+}
+
 int main()
 {
+    test_validation();
     test_serialization();
     test_same_input_same_transaction_hashes();
     test_fixed_header_same_block_hash();
