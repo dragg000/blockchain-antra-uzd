@@ -62,6 +62,11 @@ public:
         return initial_total;
     }
 
+    bool has_user(const Key& key) const
+    {
+        return balances.find(key) != balances.end();
+    }
+
 
     
 };

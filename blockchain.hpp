@@ -16,6 +16,7 @@ public:
     Blockchain(uint32_t difficulty); // creates genesis
 
     const Block &tip() const; // the newest block
+    const Block &get_block(size_t height) const { return blocks.at(height); }
     size_t height() const;
     uint32_t get_difficulty() const;
 

@@ -2,99 +2,51 @@
 #include "transaction.hpp"
 #include "user.hpp"
 #include "balance_state.hpp"
+#include "mining.hpp"
+#include <chrono>
+#include <iostream>
 #include <random>
-#include <set>
-#include <algorithm>
-#include <stdexcept>
+#include <string>
 
-struct Selection
-{
-    std::vector<Transaction> selected;
-    std::vector<Transaction> rejected;
-};
-
-Selection select_transaction(const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng)
-{
-    Selection selection;
-    BalanceState tmp = balances;
-    std::vector<Transaction> remaining = pool;
-
-    while (selection.selected.size() < 100 && remaining.empty() == false)
-    {
-        size_t position = rng() % remaining.size();
-        Transaction transaction = remaining[position];
-        remaining.erase(remaining.begin() + position);
-        if (tmp.apply(transaction) == false)
-            selection.rejected.push_back(transaction);
-        else
-            selection.selected.push_back(transaction);
-    }
-    return selection;
-}
-
-void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transaction> &to_remove)
-{
-    std::set<Hash> ids;
-    for (const Transaction &transaction : to_remove)
-    {
-        ids.insert(transaction.get_transaction_id());
-    }
-
-    pool.erase(std::remove_if(pool.begin(), pool.end(),
-                              [&ids](const Transaction &transaction)
-                              {
-                                  return ids.count(transaction.get_transaction_id()) > 0;
-                              }),
-               pool.end());
-}
-
-int main()
+int main(int argc, char *argv[])
 {
     const uint64_t user_seed = 1;
     const uint64_t transaction_seed = 2;
     const uint64_t selection_seed = 3;
-    const uint64_t transaction_count = 10000;
+    const uint32_t difficulty = 3;
+    const uint64_t transaction_count = argc > 1 ? std::stoull(argv[1]) : 10000;
 
     std::vector<User> users = generate_users(user_seed);
     std::vector<Transaction> pool = generate_transactions(transaction_seed, users, transaction_count);
-    std::vector<Transaction> rejected;
     std::mt19937_64 rng(selection_seed);
 
     BalanceState balances(users);
-    Blockchain bakugan(3);
+    Blockchain bakugan(difficulty);
 
-    while(!pool.empty())
+    auto start = std::chrono::steady_clock::now();
+    MiningResult result = run_mining(pool, balances, bakugan, rng, true);
+    auto end = std::chrono::steady_clock::now();
+
+    std::cout << "\nSuvestine\n"
+              << "  vartotojai:             " << users.size() << "\n"
+              << "  transakcijos:           " << transaction_count << "\n"
+              << "  priimti blokai:         " << bakugan.height() << "\n"
+              << "  itrauktos transakcijos: " << result.included << "\n"
+              << "  atmestos transakcijos:  " << result.rejected.size() << "\n"
+              << "  likusios transakcijos:  " << pool.size() << "\n"
+              << "  pradine lesu suma:      " << balances.get_initial_total() << "\n"
+              << "  galutine lesu suma:     " << balances.sum() << "\n"
+              << "  bendras laikas:         " << std::chrono::duration<double>(end - start).count() << " s\n";
+
+    for (const Transaction &transaction : result.rejected)
     {
-        Selection selection = select_transaction(pool, balances, rng);
-        if(selection.selected.empty())
-        {
-            rejected.insert(rejected.end(), selection.rejected.begin(), selection.rejected.end());
-        remove_from_pool(pool, selection.rejected);
-        continue;
-        }
-        uint64_t attempts = 0;
-        double seconds = 0.0;
-        Block block = bakugan.minePendingTransactions(selection.selected,
-            attempts, seconds);
-
-        BalanceState balances_copy = balances;
-        for(const Transaction &transaction : block.get_transactions())
-        {
-            if(!balances_copy.apply(transaction))
-            {
-                throw std::runtime_error("Iškastas blokas turi netinkama transakcija");
-            }
-        }
-        
-        if(!bakugan.add_block(block))
-        {
-            throw std::runtime_error("Grandine atmete iskasta bloka");
-        }
-
-        balances = balances_copy;
-        rejected.insert(rejected.end(), selection.rejected.begin(), selection.rejected.end());
-    remove_from_pool(pool, selection.selected);
-    remove_from_pool(pool, selection.rejected);
+        std::cout << "Atmesta " << transaction.get_transaction_id()
+                  << " (suma " << transaction.get_amount() << "): "
+                  << (balances.has_user(transaction.get_sender()) && balances.has_user(transaction.get_receiver())
+                          ? "siuntejui nepakako lesu"
+                          : "nezinomas dalyvis")
+                  << "\n";
     }
+
     return 0;
 }
