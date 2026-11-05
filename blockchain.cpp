@@ -1,5 +1,6 @@
 #include "blockchain.hpp"
 #include "block_h.hpp"
+#include "validation.hpp"
 
 Blockchain::Blockchain(uint32_t difficulty) : difficulty(difficulty)
 {
@@ -40,17 +41,56 @@ uint32_t Blockchain::get_difficulty() const
     return difficulty;
 }
 
-bool Blockchain::add_block(const Block &block)
+const std::set<Hash> &Blockchain::get_transaction_ids() const
+{
+    return known_transaction_ids;
+}
+
+bool Blockchain::add_block(const Block &block, BalanceState &balances)
 {
 
-    if (block.get_header().get_prev_hash() != tip().calculateHash())
+    const Block_h &header = block.get_header();
+
+    if (header.get_prev_hash() != tip().calculateHash())
+        return false;
+
+    if (header.get_version() != 2)
+        return false;
+
+    const auto &transactions = block.get_transactions();
+    if (transactions.empty() || transactions.size() > 100)
+        return false;
+
+    if (block.calculateTxRoot() != header.get_tx_root())
+        return false;
+
+    if (header.get_difficulty() != difficulty)
         return false;
 
     if (!block.hasValidProofOfWork())
         return false;
 
-    blocks.push_back(block);
+    BalanceState tmp(balances);
 
+    std::set<Hash> new_ids = known_transaction_ids;
+
+    for (const Transaction &transaction : transactions)
+    {
+        std::string error = validate_transaction(tmp, transaction, new_ids);
+        if (!error.empty())
+        {
+            return false;
+        }
+
+        if (!tmp.apply(transaction))
+            return false;
+
+        new_ids.insert(transaction.get_transaction_id());
+    }
+
+    blocks.push_back(block);
+    balances = tmp;
+    known_transaction_ids = new_ids;
     return true;
 }
 

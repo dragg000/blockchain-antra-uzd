@@ -43,34 +43,34 @@ int main(int argc, char *argv[])
     }
 
     auto start = std::chrono::steady_clock::now();
-    MiningResult result = run_mining(pool, balances, bakugan, rng, true);
+    MiningResult result = run_mining(pool, balances, bakugan, rng, true, known_ids);
     auto end = std::chrono::steady_clock::now();
 
     std::cout << "\nSuvestine\n"
-            << "  vartotojai:             " << users.size() << "\n"
-            << "  transakcijos:           " << transaction_count << "\n"
-            << "  priimti blokai:         " << bakugan.height() << "\n"
-            << "  itrauktos transakcijos: " << result.included << "\n"
-            << "  atmestos pries fonda:   " << refused.size() << "\n"
-            << "  atmestos atrenkant:     " << result.rejected.size() << "\n"
-            << "  likusios transakcijos:  " << pool.size() << "\n"
-            << "  pradine lesu suma:      " << balances.get_initial_total() << "\n"
-            << "  galutine lesu suma:     " << balances.sum() << "\n"
-            << "  bendras laikas:         " << std::chrono::duration<double>(end - start).count() << " s\n";
+              << "  vartotojai:             " << users.size() << "\n"
+              << "  transakcijos:           " << transaction_count << "\n"
+              << "  priimti blokai:         " << bakugan.height() << "\n"
+              << "  itrauktos transakcijos: " << result.included << "\n"
+              << "  atmestos pries fonda:   " << refused.size() << "\n"
+              << "  atmestos atrenkant:     " << result.rejected.size() << "\n"
+              << "  likusios transakcijos:  " << pool.size() << "\n"
+              << "  pradine lesu suma:      " << balances.get_initial_total() << "\n"
+              << "  galutine lesu suma:     " << balances.sum() << "\n"
+              << "  bendras laikas:         " << std::chrono::duration<double>(end - start).count() << " s\n";
 
     for (const RefusedTransaction &item : refused)
     {
         std::cout << "Neileista i fonda " << item.transaction.get_transaction_id()
-                << " (suma " << item.transaction.get_amount() << "): " << item.reason << "\n";
+                  << " (suma " << item.transaction.get_amount() << "): " << item.reason << "\n";
     }
 
     for (const Transaction &transaction : result.rejected)
     {
         std::cout << "Atmesta " << transaction.get_transaction_id()
-                << " (suma " << transaction.get_amount() << "): "
-                << (balances.has_user(transaction.get_sender()) && balances.has_user(transaction.get_receiver())
-                        ? "siuntejui nepakako lesu"
-                        : "nezinomas dalyvis")
+                  << " (suma " << transaction.get_amount() << "): "
+                  << (balances.has_user(transaction.get_sender()) && balances.has_user(transaction.get_receiver())
+                          ? "siuntejui nepakako lesu"
+                          : "nezinomas dalyvis")
                   << "\n";
     }
 
