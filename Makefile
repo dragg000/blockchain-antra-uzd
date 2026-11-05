@@ -1,6 +1,6 @@
 CXX ?= c++
 CXXFLAGS = -std=c++17 -O2 -Wall -Wextra -I.
-SOURCES = setup.cpp hash.cpp block_h.cpp blockchain.cpp mining.cpp
+SOURCES = setup.cpp hash.cpp block_h.cpp blockchain.cpp mining.cpp validation.cpp
 HEADERS = $(wildcard *.hpp)
 
 all: blockchain
