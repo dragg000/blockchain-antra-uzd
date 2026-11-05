@@ -55,14 +55,14 @@ bool Blockchain::add_block(const Block &block)
 }
 
 Block Blockchain::minePendingTransactions(const std::vector<Transaction> &selected,
-                                          uint64_t &attempts,
-                                          double &elapsed_seconds) const
+                                        uint64_t &attempts,
+                                        double &elapsed_seconds) const
 {
-    // Fixed timestamps keep the hashes the same on every run.
+    
     const uint64_t base_timestamp = 1000;
     const uint64_t timestamp = base_timestamp + height() + 1;
 
-    // The Block constructor fills in tx_root.
+    
     Block new_block(
         Block_h(
             tip().calculateHash(),
