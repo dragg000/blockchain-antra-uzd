@@ -30,20 +30,15 @@ int main(int argc, char *argv[])
 
     for (const Transaction &transaction : generated)
     {
-        const std::string reason = validate_transaction(balances, transaction, known_ids);
-        if (reason.empty())
+        std::string error = add_transaction_to_pool(pool, transaction, balances, bakugan.get_transaction_ids());
+        if (!error.empty())
         {
-            pool.push_back(transaction);
-            known_ids.insert(transaction.get_transaction_id());
-        }
-        else
-        {
-            refused.push_back({transaction, reason});
+            refused.push_back({transaction, error});
         }
     }
 
     auto start = std::chrono::steady_clock::now();
-    MiningResult result = run_mining(pool, balances, bakugan, rng, true, known_ids);
+    MiningResult result = run_mining(pool, balances, bakugan, rng, true);
     auto end = std::chrono::steady_clock::now();
 
     std::cout << "\nSuvestine\n"

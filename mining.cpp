@@ -20,6 +20,12 @@ Selection select_transaction(const std::vector<Transaction> &pool, const Balance
 
         std::string error = validate_transaction(tmp, transaction, candidate_ids);
 
+        if (!error.empty())
+        {
+            selection.rejected.push_back(transaction);
+            continue;
+        }
+
         if (tmp.apply(transaction) == false)
         {
             selection.rejected.push_back(transaction);
@@ -70,8 +76,7 @@ MiningResult run_mining(
     BalanceState &balances,
     Blockchain &chain,
     std::mt19937_64 &rng,
-    bool print_blocks,
-    const std::set<Hash> &known_ids)
+    bool print_blocks)
 {
     MiningResult result;
 
