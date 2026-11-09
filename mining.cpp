@@ -39,7 +39,7 @@ Selection select_transaction(const std::vector<Transaction> &pool, const Balance
     return selection;
 }
 
-std::vector<Selection> build_candidates(size_t candidate_count, const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng,const std::set<Hash> &known_ids)
+std::vector<Selection> build_candidates(size_t candidate_count, const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng, const std::set<Hash> &known_ids)
 {
     std::vector<Selection> candidate_selections;
     for(size_t i = 0; i < candidate_count; i++)
@@ -124,14 +124,26 @@ MiningResult run_mining(
 
     while (!pool.empty())
     {
-        Selection selection = select_transaction(
+        std::vector<Selection> selections = build_candidates(
+            candidates_per_block,
             pool,
             balances,
             rng,
             chain.get_transaction_ids());
 
-        if (selection.selected.empty())
+        // Visi kandidatai pradeda nuo tos pacios busenos, todel jei vienas negali itraukti
+        // nieko, negali ne vienas. Toks kandidatas perziurejo visa fonda ir viska atmete.
+        bool nothing_fits = true;
+        for (const Selection &selection : selections)
         {
+            if (!selection.selected.empty())
+                nothing_fits = false;
+        }
+
+        if (nothing_fits)
+        {
+            const Selection &selection = selections.front();
+
             result.rejected.insert(
                 result.rejected.end(),
                 selection.rejected.begin(),
@@ -142,33 +154,37 @@ MiningResult run_mining(
             break;
         }
 
-        uint64_t attempts = 0;
-        double seconds = 0.0;
+        std::vector<Candidate> candidates;
+        for (const Selection &selection : selections)
+        {
+            candidates.push_back(Candidate{selection, chain.prepare_block(selection.selected)});
+        }
 
-        Block block = chain.minePendingTransactions(
-            selection.selected,
-            attempts,
-            seconds);
+        size_t winner_index = mine_candidates(candidates, candidate_start_budget, candidate_max_passes);
+        const Candidate &winner = candidates[winner_index];
 
-        // Validate and accept block, including balance updates
-        if (!chain.add_block(block, balances))
+        // Laimetojas tikrinamas is naujo: nuoroda, versija, tx_root, sudetingumas, PoW
+        // ir visos transakcijos patvirtintu balansu kopijoje. Tik tada keiciasi busena.
+        if (!chain.add_block(winner.block, balances))
         {
             throw std::runtime_error(
                 "Grandine atmete iskasta bloka");
         }
 
-        result.included += selection.selected.size();
+        result.included += winner.selection.selected.size();
 
         result.rejected.insert(
             result.rejected.end(),
-            selection.rejected.begin(),
-            selection.rejected.end());
+            winner.selection.rejected.begin(),
+            winner.selection.rejected.end());
 
-        remove_from_pool(pool, selection.selected);
-        remove_from_pool(pool, selection.rejected);
+        // Is fondo dingsta tik laimetojo transakcijos. Kitu kandidatu atrinktos
+        // transakcijos lieka fonde ir gali patekti i kita bloka.
+        remove_from_pool(pool, winner.selection.selected);
+        remove_from_pool(pool, winner.selection.rejected);
 
         if (print_blocks)
-            print_block(chain, attempts, seconds);
+            print_block(chain, winner.attempts, winner.seconds);
     }
 
     return result;

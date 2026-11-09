@@ -8,6 +8,7 @@
 #include <iostream>
 #include <random>
 #include <set>
+#include <stdexcept>
 #include <string>
 
 int main(int argc, char *argv[])
@@ -38,7 +39,20 @@ int main(int argc, char *argv[])
     }
 
     auto start = std::chrono::steady_clock::now();
-    MiningResult result = run_mining(pool, balances, bakugan, rng, true);
+    MiningResult result;
+    try
+    {
+        result = run_mining(pool, balances, bakugan, rng, true);
+    }
+    catch (const std::runtime_error &error)
+    {
+        // Pvz. joks kandidatas nerado nonce per leistinas eiles. Jau priimti blokai lieka galioti,
+        // o neuzbaigtas blokas nieko nepakeite.
+        std::cout << "\nKasimas sustabdytas: " << error.what() << "\n"
+                  << "  priimti blokai:        " << bakugan.height() << "\n"
+                  << "  likusios transakcijos: " << pool.size() << "\n";
+        return 1;
+    }
     auto end = std::chrono::steady_clock::now();
 
     std::cout << "\nSuvestine\n"
