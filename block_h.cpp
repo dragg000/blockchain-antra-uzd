@@ -32,6 +32,7 @@ void Block::mine(uint64_t &attempts, double &elapsed_seconds)
     uint64_t count = 0;
 
     auto start = std::chrono::steady_clock::now();
+    
 
     while (!hasValidProofOfWork())
     {
@@ -44,6 +45,34 @@ void Block::mine(uint64_t &attempts, double &elapsed_seconds)
 
     elapsed_seconds =
         std::chrono::duration_cast<std::chrono::duration<double>>(end - start).count();
+}
+
+bool Block::mine(uint64_t budget, uint64_t &attempts, double &elapsed_seconds)
+{
+    bool success = false;
+    uint64_t count = 0;
+
+    auto start = std::chrono::steady_clock::now();
+    
+    while (count < budget && !hasValidProofOfWork())
+    {
+        header.set_nonce(header.get_nonce() + 1);
+        count++;
+    }
+    auto end = std::chrono::steady_clock::now();
+
+    if(hasValidProofOfWork())
+    {
+        success = true;
+        attempts = count + 1;
+    }
+    else
+        attempts = count;
+
+    elapsed_seconds =
+        std::chrono::duration_cast<std::chrono::duration<double>>(end - start).count();
+    
+    return success;
 }
 
 Hash Block::calculateTxRoot() const

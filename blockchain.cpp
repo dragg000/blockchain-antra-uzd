@@ -94,9 +94,17 @@ Block Blockchain::minePendingTransactions(const std::vector<Transaction> &select
                                           double &elapsed_seconds) const
 {
 
+    Block new_block = prepare_block(selected);
+
+    new_block.mine(attempts, elapsed_seconds);
+
+    return new_block;
+}
+
+Block Blockchain::prepare_block(const std::vector<Transaction> &selected) const
+{
     const uint64_t base_timestamp = 1000;
     const uint64_t timestamp = base_timestamp + height() + 1;
-
     Block new_block(
         Block_h(
             tip().calculateHash(),
@@ -106,8 +114,6 @@ Block Blockchain::minePendingTransactions(const std::vector<Transaction> &select
             difficulty,
             0),
         selected);
-
-    new_block.mine(attempts, elapsed_seconds);
 
     return new_block;
 }

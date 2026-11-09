@@ -9,6 +9,7 @@
 #include <limits>
 #include <random>
 #include <set>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -467,6 +468,119 @@ static void test_validation()
     CHECK(generated_pool.size() == generated.size());
 }
 
+static void test_budget_mining()
+{
+    std::cout << "Kasimas su biudzetu\n";
+    std::vector<Transaction> transactions = {make_transaction(key("A"), key("B"), 1, 0)};
+    uint64_t attempts = 0;
+    double seconds = 0.0;
+
+    // 64 nuliu sudetingumas praktiskai neimanomas, todel biudzetas visada baigiasi.
+    Block impossible(Block_h(std::string(64, '0'), "", 1001, 2, 64, 0), transactions);
+    CHECK(!impossible.mine(10, attempts, seconds));
+    CHECK(attempts == 10);
+    CHECK(impossible.get_header().get_nonce() == 10);
+    // Antras ejimas tesia nuo ten, kur sustojo, o ne nuo nulio.
+    CHECK(!impossible.mine(10, attempts, seconds));
+    CHECK(impossible.get_header().get_nonce() == 20);
+    CHECK(impossible.get_header().get_difficulty() == 64);
+
+    Block easy(Block_h(std::string(64, '0'), "", 1001, 2, 3, 0), transactions);
+    CHECK(easy.mine(1000000, attempts, seconds));
+    CHECK(easy.hasValidProofOfWork());
+    CHECK(easy.calculateHash().substr(0, 3) == "000");
+    CHECK(attempts == easy.get_header().get_nonce() + 1);
+    CHECK(easy.get_header().get_difficulty() == 3);
+}
+
+static std::vector<Candidate> make_candidates(const Blockchain &chain, const std::vector<Transaction> &pool,
+                                              const BalanceState &balances, uint64_t seed)
+{
+    std::mt19937_64 rng(seed);
+    std::vector<Candidate> candidates;
+    for (const Selection &selection : build_candidates(5, pool, balances, rng, chain.get_transaction_ids()))
+    {
+        candidates.push_back(Candidate{selection, chain.prepare_block(selection.selected)});
+    }
+    return candidates;
+}
+
+static void test_mine_candidates()
+{
+    std::cout << "Penki kandidatai kasa paeiliui\n";
+    const Key A = key("A");
+    const Key B = key("B");
+    const Key C = key("C");
+    std::vector<User> users = small_users();
+    std::vector<Transaction> pool = {make_transaction(A, B, 10, 0), make_transaction(A, C, 20, 1),
+                                     make_transaction(B, C, 5, 2), make_transaction(A, B, 70, 3)};
+
+    BalanceState balances(users);
+    Blockchain chain(3);
+    std::vector<Candidate> candidates = make_candidates(chain, pool, balances, 7);
+    CHECK(candidates.size() == 5);
+
+    size_t winner = mine_candidates(candidates, candidate_start_budget, candidate_max_passes);
+    CHECK(winner < candidates.size());
+    CHECK(candidates[winner].found);
+    CHECK(candidates[winner].block.hasValidProofOfWork());
+    CHECK(candidates[winner].block.get_header().get_difficulty() == chain.get_difficulty());
+
+    // Laimi tik vienas, o pries ji buve kandidatai bande, bet nerado.
+    size_t found_count = 0;
+    bool earlier_tried_and_failed = true;
+    for (size_t i = 0; i < candidates.size(); i++)
+    {
+        if (candidates[i].found)
+            found_count++;
+        if (i < winner && !candidates[i].selection.selected.empty())
+            earlier_tried_and_failed = earlier_tried_and_failed && candidates[i].attempts > 0 && !candidates[i].found;
+    }
+    CHECK(found_count == 1);
+    CHECK(earlier_tried_and_failed);
+
+    // Kasimas nekeicia patvirtintos busenos, o laimetoja grandine priima.
+    CHECK(balances.sum() == 150 && chain.height() == 0);
+    CHECK(chain.add_block(candidates[winner].block, balances));
+    CHECK(balances.sum() == 150);
+
+    // Tie patys duomenys ir seed: tas pats laimetojas ir tas pats nonce.
+    BalanceState again_balances(users);
+    Blockchain again_chain(3);
+    std::vector<Candidate> again = make_candidates(again_chain, pool, again_balances, 7);
+    size_t again_winner = mine_candidates(again, candidate_start_budget, candidate_max_passes);
+    CHECK(again_winner == winner);
+    CHECK(again[again_winner].block.get_header().get_nonce() == candidates[winner].block.get_header().get_nonce());
+}
+
+static void test_mine_candidates_gives_up()
+{
+    std::cout << "Kasimas sustoja po leistinu eiliu\n";
+    std::vector<Transaction> transactions = {make_transaction(key("A"), key("B"), 1, 0)};
+    Block_h impossible_header(std::string(64, '0'), "", 1001, 2, 64, 0);
+
+    std::vector<Candidate> candidates;
+    candidates.push_back(Candidate{Selection{transactions, {}}, Block(impossible_header, transactions)});
+    candidates.push_back(Candidate{Selection{}, Block(impossible_header, {})});
+
+    bool threw = false;
+    try
+    {
+        mine_candidates(candidates, 5, 2);
+    }
+    catch (const std::runtime_error &)
+    {
+        threw = true;
+    }
+    CHECK(threw);
+    // Dvi eiles: 5 bandymai, tada padvigubintas biudzetas 10.
+    CHECK(candidates[0].attempts == 15);
+    CHECK(candidates[0].block.get_header().get_nonce() == 15);
+    CHECK(!candidates[0].found);
+    // Kandidatas be transakciju praleidziamas.
+    CHECK(candidates[1].attempts == 0);
+}
+
 int main()
 {
     test_validation();
@@ -484,6 +598,9 @@ int main()
     test_full_run_invariants();
     test_same_input_same_chain();
     test_bad_blocks_are_refused();
+    test_budget_mining();
+    test_mine_candidates();
+    test_mine_candidates_gives_up();
 
     std::cout << "\nPatikros: " << checks << ", nepavyko: " << failures << "\n";
     return failures == 0 ? 0 : 1;

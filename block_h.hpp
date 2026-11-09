@@ -71,6 +71,7 @@ public:
     bool hasValidProofOfWork() const;
     Hash calculateTxRoot() const;
     void mine(uint64_t &attempts, double &elapsed_seconds);
+    bool mine(uint64_t budget, uint64_t &attempts, double &elapsed_seconds);
 };
 
 #endif

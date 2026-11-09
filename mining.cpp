@@ -48,6 +48,39 @@ std::vector<Selection> build_candidates(size_t candidate_count, const std::vecto
     return candidate_selections;
 }
 
+size_t mine_candidates(std::vector<Candidate> &candidates, uint64_t start_budget, size_t max_passes)
+{
+    uint64_t budget = start_budget;
+
+    for (size_t pass = 0; pass < max_passes; pass++)
+    {
+        for (size_t i = 0; i < candidates.size(); i++)
+        {
+            Candidate &candidate = candidates[i];
+            if (candidate.selection.selected.empty())
+                continue;
+
+            uint64_t attempts = 0;
+            double seconds = 0.0;
+            bool found = candidate.block.mine(budget, attempts, seconds);
+
+            candidate.attempts += attempts;
+            candidate.seconds += seconds;
+
+            if (found)
+            {
+                candidate.found = true;
+                return i;
+            }
+        }
+
+        // Per visa eile niekas nerado: kitoje eileje kiekvienas gauna dvigubai daugiau bandymu.
+        budget *= 2;
+    }
+
+    throw std::runtime_error("Joks kandidatas nerado tinkamo nonce per leistinas eiles");
+}
+
 void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transaction> &to_remove)
 {
     std::set<Hash> ids;

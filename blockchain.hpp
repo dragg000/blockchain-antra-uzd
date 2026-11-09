@@ -31,6 +31,8 @@ public:
     Block minePendingTransactions(const std::vector<Transaction> &selected,
                                   uint64_t &attempts,
                                   double &elapsed_seconds) const;
+    
+    Block prepare_block(const std::vector<Transaction> &selected) const;
 };
 
 #endif
