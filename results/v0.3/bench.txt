@@ -1,0 +1,33 @@
+Matavimo salygos: 1000 vartotoju, 10000 transakciju, seed 1/2/3, sudetingumas 3, kartojimu 7
+
+1. Kasimas (fiksuotas bandymu skaicius)
+  kartai:    7
+  vidurkis:  0.069908 s
+  nuokrypis: 0.001176 s
+  min / max: 0.069080 / 0.072189 s
+  pastaba:   200000 bandymu per karta, viena antraste, sudetingumas 16
+2. Merkle saknis
+  kartai:    7
+  vidurkis:  0.037627 s
+  nuokrypis: 0.005757 s
+  min / max: 0.035027 / 0.050652 s
+  pastaba:   500 skaiciavimu per karta, 100 transakciju, saknis 75374ba62a49cfa24d2506b07cd6ae4a06b9e21b72eea8355d12fd55367dce0d
+3. Tikrinimas pries fonda
+  kartai:    7
+  vidurkis:  0.037322 s
+  nuokrypis: 0.004460 s
+  min / max: 0.035340 / 0.047422 s
+  pastaba:   10000 transakciju per karta, priimta 10000
+4. Kandidatu sudarymas
+  kartai:    7
+  vidurkis:  0.053114 s
+  nuokrypis: 0.000782 s
+  min / max: 0.052098 / 0.053936 s
+  pastaba:   20 kartu po 5 kandidatus is 10000 transakciju fondo, kandidate 100 transakciju
+5. Visas paleidimas (be isvedimo)
+  kartai:    7
+  vidurkis:  0.488076 s
+  nuokrypis: 0.019161 s
+  min / max: 0.473626 / 0.528812 s
+  pastaba:   100 bloku, 9999 transakciju, lesu suma 498753171
+  paskutinio bloko hash: 000df5652989778a44f24b2ff303158779079dbdacf501e27764198929b0d64d

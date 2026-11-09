@@ -138,33 +138,33 @@ Each step is marked **[A]**, **[B]** or **[Both]**. "(after N)" means that step 
 
 ## v0.3: improvement with AI tools (§5)
 
-- [ ] **34. [B] Create the branch.** Make `v0.3-dev` from `main`.
-- [ ] **35. [Both] Choose at least two directions to improve.** Each person takes one. For example, A could take validation errors or test coverage, and B mining or Merkle efficiency. Other options are code structure and memory use.
+- [x] **34. [B] Create the branch.** Make `v0.3-dev` from `main`.
+- [x] **35. [Both] Choose at least two directions to improve.** Each person takes one. For example, A could take validation errors or test coverage, and B mining or Merkle efficiency. Other options are code structure and memory use.
   - **Planned: multithreaded candidate mining.** Replace step 27's taking turns with a budget by mining the five candidates on separate threads at the same time. The first thread to find a valid nonce wins and the others stop. Compare it with v0.2's sequential mining under the same conditions (step 39). The winner can then change between runs, so decide how the "same input, same chain" test handles that.
-- [ ] **36. [Both] Run the AI review and log it.** Each person does this for their own direction. Give the tool the problem, the requirements and the relevant code. Save the tool or model name, the date and the significant prompts.
-- [ ] **37. [Both] Evaluate the suggestions.** Treat each one as a hypothesis, because an AI suggestion doesn't prove anything is correct. Put each accepted change in its own commit, and have the other person read it. Describe how you verified at least one, and explain any you rejected.
-- [ ] **38. [A] Run the same tests on v0.2 and v0.3 (after 37).** Use the same starting state, data and difficulty. Compare with the frozen tag, and keep the v0.2 baseline available next to v0.3.
-- [ ] **39. [B] If you claim a speedup, measure it properly (after 37).**
+- [x] **36. [Both] Run the AI review and log it.** Each person does this for their own direction. Give the tool the problem, the requirements and the relevant code. Save the tool or model name, the date and the significant prompts.
+- [x] **37. [Both] Evaluate the suggestions.** Treat each one as a hypothesis, because an AI suggestion doesn't prove anything is correct. Put each accepted change in its own commit, and have the other person read it. Describe how you verified at least one, and explain any you rejected.
+- [x] **38. [A] Run the same tests on v0.2 and v0.3 (after 37).** Use the same starting state, data and difficulty. Compare with the frozen tag, and keep the v0.2 baseline available next to v0.3.
+- [x] **39. [B] If you claim a speedup, measure it properly (after 37).**
   - At least 5 runs, with mean and spread
   - Timing kept separate from console output
   - Same machine, compiler flags and hash version, with fixed candidate headers
   - A fixed number of attempts, not time to a lucky solution
   - Nothing else heavy running on the machine
-- [ ] **40. [Both] Write the conclusion (after 38, 39).** Say what improved, what didn't change or got worse, and what limits remain. If a suggestion gave no benefit, show the test instead of inventing an improvement.
+- [x] **40. [Both] Write the conclusion (after 38, 39).** Say what improved, what didn't change or got worse, and what limits remain. If a suggestion gave no benefit, show the test instead of inventing an improvement.
 
 ---
 
 ## Submit (§6)
 
-- [ ] **41. [Both] Finish the README.**
+- [x] **41. [Both] Finish the README.**
   - **[A] Running:** language, dependencies, build, small and full runs, test command
   - **[A] Model:** fields, serialization, hash version, genesis, balance and invalid-transaction rules
   - **[A] Reproducibility:** seed, generator, starting balances, difficulty, budgets, measurement conditions
   - **[B] Evidence:** a block example, final summary, test table, v0.2/v0.3 comparison
   - **[B] AI use:** tools and models, prompt log, accepted and rejected suggestions and how you checked them, all stages included
   - **[Both] Sources and contributions:** other people's code and sources you used, plus who did what
-- [ ] **42. [B] Release v0.3 (after 41).** Merge to `main`, tag `v0.3` and push.
-- [ ] **43. [A] Check the repo before submitting (after 42).**
+- [x] **42. [B] Release v0.3 (after 41).** Merge to `main`, tag `v0.3` and push.
+- [x] **43. [A] Check the repo before submitting (after 42).**
   - The repo is public
   - Tags `v0.1`, `v0.2` and `v0.3` are all on GitHub
   - A fresh clone of each tag builds and passes its tests

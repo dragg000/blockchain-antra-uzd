@@ -1,0 +1,155 @@
+diff --git a/mining.cpp b/mining.cpp
+index 315e23e..4310739 100644
+--- a/mining.cpp
++++ b/mining.cpp
+@@ -8,6 +8,45 @@
+ #include <unordered_set>
+ #include <utility>
+ 
++RemainingIndices::RemainingIndices(size_t count) : tree(count + 1, 0), left(count), highest_step(1)
++{
++    // Kai visos vietos dar likusios, mazgas i dengia tiek vietu, koks jo zemiausias bitas.
++    for (size_t i = 1; i <= count; i++)
++    {
++        tree[i] = static_cast<uint32_t>(i & (~i + 1));
++    }
++    while (highest_step * 2 <= count)
++    {
++        highest_step *= 2;
++    }
++}
++
++size_t RemainingIndices::take(size_t position)
++{
++    const size_t count = tree.size() - 1;
++
++    // Leidziamasi medziu zemyn ieskant paskutines vietos, iki kurios likusiu yra maziau nei reikia.
++    size_t index = 0;
++    size_t needed = position + 1;
++    for (size_t step = highest_step; step > 0; step /= 2)
++    {
++        const size_t next = index + step;
++        if (next <= count && tree[next] < needed)
++        {
++            index = next;
++            needed -= tree[next];
++        }
++    }
++
++    // `index` yra ieskoma vieta (skaiciuojant nuo 0). Ji pazymima kaip istraukta.
++    for (size_t i = index + 1; i <= count; i += i & (~i + 1))
++    {
++        tree[i]--;
++    }
++    left--;
++    return index;
++}
++
+ Selection select_transaction(const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng, const std::set<Hash> &known_ids)
+ {
+     Selection selection;
+@@ -16,11 +55,7 @@ Selection select_transaction(const std::vector<Transaction> &pool, const Balance
+     // Fondas nekopijuojamas: traukiami ir salinami tik transakciju indeksai.
+     // Traukimo taisykle ta pati kaip v0.2 (atsitiktine vieta likusiu sarase, salinama islaikant tvarka),
+     // todel tas pats seed atrenka tas pacias transakcijas.
+-    std::vector<size_t> remaining(pool.size());
+-    for (size_t i = 0; i < remaining.size(); i++)
+-    {
+-        remaining[i] = i;
+-    }
++    RemainingIndices remaining(pool.size());
+ 
+     // Patvirtintu ID aibe nekopijuojama: sio kandidato ID renkami atskirai.
+     std::set<Hash> candidate_ids;
+@@ -28,8 +63,7 @@ Selection select_transaction(const std::vector<Transaction> &pool, const Balance
+     while (selection.selected.size() < max_block_transactions && remaining.empty() == false)
+     {
+         size_t position = rng() % remaining.size();
+-        const Transaction &transaction = pool[remaining[position]];
+-        remaining.erase(remaining.begin() + position);
++        const Transaction &transaction = pool[remaining.take(position)];
+ 
+         // Pirma formatas, dalyviai, ID ir pasikartojimai, tada balansas laikinoje kopijoje.
+         std::string error = validate_transaction(tmp, transaction, known_ids);
+diff --git a/mining.hpp b/mining.hpp
+index a6f7a1d..5e5ef86 100644
+--- a/mining.hpp
++++ b/mining.hpp
+@@ -33,6 +33,25 @@ struct Candidate
+     size_t turns = 0; // kiek kartu kandidatas gavo eile kasti
+ };
+ 
++// Dar neistrauktu fondo vietu sarasas atrankai.
++// take(k) grazina k-taja likusia vieta (skaiciuojant nuo 0) ir ja pasalina.
++// Rezultatas toks pat kaip std::vector<size_t>{0, 1, ..., n-1} su erase(begin() + k),
++// tik vienas traukimas kainuoja O(log n), o ne O(n). Viduje naudojamas Fenwick medis.
++class RemainingIndices
++{
++public:
++    explicit RemainingIndices(size_t count);
++
++    size_t size() const { return left; }
++    bool empty() const { return left == 0; }
++    size_t take(size_t position); // position < size()
++
++private:
++    std::vector<uint32_t> tree; // tree[i] - kiek likusiu vietu yra i-ojo mazgo ruoze (indeksai nuo 1)
++    size_t left;
++    size_t highest_step; // didziausias dvejeto laipsnis, nevirsijantis vietu skaiciaus
++};
++
+ struct MiningResult
+ {
+     std::vector<Transaction> rejected;
+diff --git a/tests/tests_v03.cpp b/tests/tests_v03.cpp
+index 322caa7..0e5c874 100644
+--- a/tests/tests_v03.cpp
++++ b/tests/tests_v03.cpp
+@@ -553,6 +553,39 @@ static void test_input_limits()
+     CHECK(balances.sum() == 12);
+ }
+ 
++static void test_remaining_indices()
++{
++    std::cout << "Traukimas is fondo: tas pats rezultatas kaip salinant is vektoriaus\n";
++    std::mt19937_64 rng(42);
++    bool same_as_vector = true;
++    for (size_t count : {0, 1, 2, 3, 7, 8, 9, 100, 1000, 1023, 1024, 1025, 5000})
++    {
++        RemainingIndices fast(count);
++        std::vector<size_t> slow(count);
++        for (size_t i = 0; i < count; i++)
++        {
++            slow[i] = i;
++        }
++        same_as_vector = same_as_vector && fast.size() == count && fast.empty() == (count == 0);
++
++        while (!slow.empty())
++        {
++            // Atsitiktine vieta, taip pat kartais pirma ir paskutine.
++            size_t position = rng() % slow.size();
++            if (rng() % 10 == 0)
++                position = 0;
++            else if (rng() % 10 == 0)
++                position = slow.size() - 1;
++
++            const size_t expected = slow[position];
++            slow.erase(slow.begin() + position);
++            same_as_vector = same_as_vector && fast.take(position) == expected && fast.size() == slow.size();
++        }
++        same_as_vector = same_as_vector && fast.empty();
++    }
++    CHECK(same_as_vector);
++}
++
+ struct RunResult
+ {
+     Hash tip;
+@@ -625,6 +658,7 @@ int main()
+     test_block_rejection_reasons();
+     test_selection_reasons();
+     test_input_limits();
++    test_remaining_indices();
+     test_same_chain_as_v02();
+ 
+     std::cout << "\nv0.3 patikros: " << checks << ", nepavyko: " << failures << "\n";

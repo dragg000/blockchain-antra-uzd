@@ -1,0 +1,49 @@
+v0.2 ir v0.3 palyginimas
+========================
+v0.2 atskaita:   zyma v0.2, commit 6b38daa
+v0.3:            commit d2b8a4e
+Kompiliatorius:  Apple clang version 17.0.0 (clang-1700.6.3.2)
+Parinktys:       v0.2 -std=c++17 -O2 -Wall -Wextra -I.
+                 v0.3 -std=c++17 -O2 -Wall -Wextra -I. -pthread
+Maisos funkcija: ta pati. Visas v0.2 hash.cpp kodas islikes nepakeistas, po juo prideta 112 eiluciu
+Duomenys:        seed 1/2/3, 1000 vartotoju, sudetingumas 3
+
+1. Tie patys teisingumo testai
+------------------------------
+tests/tests.cpp v0.3 versijoje nepakeistas (SHA-256 aab85d10f6ab98f3)
+v0.2 kodas:  Patikros: 187, nepavyko: 0
+v0.3 kodas:  Patikros: 187, nepavyko: 0
+Testu isvestis sutampa
+Papildomi v0.3 testai (tests/tests_v03.cpp): v0.3 patikros: 186, nepavyko: 0
+
+2. Ta pati grandine is tu paciu duomenu
+---------------------------------------
+   250 transakciju:   3 bloku,   31 palygintos eilutes, v0.2 = v0.3 nuosekliai = v0.3 lygiagreciai: TAIP
+                     paskutinio bloko hash 000c331f06b384d9fcb273acb06b7c58ac6171f29cfe64e722b4683af52535bc
+  2000 transakciju:  20 bloku,  150 palygintos eilutes, v0.2 = v0.3 nuosekliai = v0.3 lygiagreciai: TAIP
+                     paskutinio bloko hash 000d8c1b2b53efbae7127ecb3ee912523fe0718f9606f43d7b0427f27128b36b
+ 10000 transakciju: 100 bloku,  711 palygintos eilutes, v0.2 = v0.3 nuosekliai = v0.3 lygiagreciai: TAIP
+                     paskutinio bloko hash 000df5652989778a44f24b2ff303158779079dbdacf501e27764198929b0d64d
+Lyginama: kiekvieno bloko aukstis, transakciju skaicius, prev_hash, tx_root, hash, difficulty, nonce,
+          suvestines skaiciai, lesu sumos, laimeti blokai pagal kandidata ir atmestos transakcijos.
+
+3. Sparta (bench.cpp, tas pats failas abiejose versijose)
+---------------------------------------------------------
+bench.cpp nepakeistas. Kartojimu: 7, versijos matuojamos pakaitomis.
+
+Matavimas                          v0.2: vidurkis (nuokr.), mediana v0.3: vidurkis (nuokr.), mediana Medianu santykis
+Kasimas, 200 000 bandymu           0.5532 s (0.0368), 0.5618 s    0.0648 s (0.0049), 0.0626 s     8.98 karto
+Merkle saknis x 500                0.4942 s (0.0458), 0.4854 s    0.0337 s (0.0024), 0.0342 s    14.20 karto
+Tikrinimas pries fonda, 10 000 tx  0.0407 s (0.0039), 0.0397 s    0.0352 s (0.0026), 0.0337 s     1.18 karto
+5 kandidatu sudarymas x 20         0.3490 s (0.0343), 0.3390 s    0.0503 s (0.0031), 0.0507 s     6.69 karto
+Visas paleidimas be isvedimo       3.2514 s (0.2355), 3.2399 s    0.4530 s (0.0204), 0.4602 s     7.04 karto
+Santykis skaiciuojamas is medianu, nes jos maziau jautrios pavieniams sutrikdytiems kartojimams.
+
+Viso paleidimo paskutinio bloko hash: v0.2 000df5652989778a44f24b2ff303158779079dbdacf501e27764198929b0d64d
+                                      v0.3 000df5652989778a44f24b2ff303158779079dbdacf501e27764198929b0d64d (sutampa)
+Kasimo matavime bandymu skaicius fiksuotas (200 000, sudetingumas 16), o ne laikas iki sprendimo.
+v0.3 visas paleidimas kasa lygiagreciai (numatytasis budas).
+
+4. Didziausias atminties naudojimas (./blockchain, 10 000 transakciju)
+----------------------------------------------------------------------
+v0.2: 18.8 MB    v0.3: 15.9 MB    (3 paleidimu mediana, /usr/bin/time -l)

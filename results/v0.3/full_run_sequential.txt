@@ -1,0 +1,1524 @@
+Blokas #1
+  transakcijos:  100
+  prev_hash:     b435f01f2902175d6d5ef175eee41d98bd0be80461135eb342ffbf6d72a2f380
+  tx_root:       fd613ce40104fb6266ea960174ef3bb2a11db7706f538faacfeb3327cf196835
+  hash:          0009d2556abc1aaa7270a3dd2e5c27100f1aa77bcd5874b4e5c8a36427621092
+  difficulty:    3
+  nonce:         672
+  bandymai:      673
+  kasimo laikas: 0.000272 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       673   0.000272  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #2
+  transakcijos:  100
+  prev_hash:     0009d2556abc1aaa7270a3dd2e5c27100f1aa77bcd5874b4e5c8a36427621092
+  tx_root:       b59fca11963efa994f32eafa45c8ef252ffcd8d58427f47873dabb85ea09862d
+  hash:          0000c744ea4fb15f2beb7b01ca7e981e70ef60cc6af4db88b47090afced0f21d
+  difficulty:    3
+  nonce:         132
+  bandymai:      133
+  kasimo laikas: 0.000042 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000642  nerado
+                  2           100      1       133   0.000042  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #3
+  transakcijos:  100
+  prev_hash:     0000c744ea4fb15f2beb7b01ca7e981e70ef60cc6af4db88b47090afced0f21d
+  tx_root:       9e6c13f0ea3df41352c3bf89f9c283b666e43f51d131dd9e36292998a4df7215
+  hash:          000a9ba342acbf3123df320646b69a83cd3023455671795623c4c0a53af8aa2d
+  difficulty:    3
+  nonce:         385
+  bandymai:      386
+  kasimo laikas: 0.000124 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       386   0.000124  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #4
+  transakcijos:  100
+  prev_hash:     000a9ba342acbf3123df320646b69a83cd3023455671795623c4c0a53af8aa2d
+  tx_root:       ac21800bbd1e9949b0d131d8c0bfdd31246a5f9edb9d631bcd9c67671ba5e167
+  hash:          00067f83cc00c4ad6a9c70c402f7707154f1bad24bfed6fb53962a14ccf2c87e
+  difficulty:    3
+  nonce:         1400
+  bandymai:      1401
+  kasimo laikas: 0.000436 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1401   0.000436  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #5
+  transakcijos:  100
+  prev_hash:     00067f83cc00c4ad6a9c70c402f7707154f1bad24bfed6fb53962a14ccf2c87e
+  tx_root:       61f23134414469eeb8083784624a58ec42dbf3b63667c575e483ed5b57b32acf
+  hash:          000871f2375643d56020881cbedc6a2b6ebb5c271a9a3d34b746ffda3a879a4d
+  difficulty:    3
+  nonce:         921
+  bandymai:      922
+  kasimo laikas: 0.000350 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000644  nerado
+                  2           100      1      2000   0.000652  nerado
+                  3           100      1       922   0.000350  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #6
+  transakcijos:  100
+  prev_hash:     000871f2375643d56020881cbedc6a2b6ebb5c271a9a3d34b746ffda3a879a4d
+  tx_root:       03e00315463d5472740dc9c494e67443e2887d9f98791575c2bba88647d5a466
+  hash:          0002de57d16c3fdd922d1587f5d8bef4f8c9a4a0cc9715c7d0fe79c97b1e4aa4
+  difficulty:    3
+  nonce:         1477
+  bandymai:      1478
+  kasimo laikas: 0.000488 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1478   0.000488  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #7
+  transakcijos:  100
+  prev_hash:     0002de57d16c3fdd922d1587f5d8bef4f8c9a4a0cc9715c7d0fe79c97b1e4aa4
+  tx_root:       59da9f085c84850291502b5e84855a0b85558a7a3397c9b8ca1777387de83c53
+  hash:          0009c79111fba557a2b7ba95d003853d11771566ffb05f35581eb76716c167f7
+  difficulty:    3
+  nonce:         1687
+  bandymai:      1688
+  kasimo laikas: 0.000534 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000641  nerado
+                  2           100      1      1688   0.000534  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #8
+  transakcijos:  100
+  prev_hash:     0009c79111fba557a2b7ba95d003853d11771566ffb05f35581eb76716c167f7
+  tx_root:       4b25430dca08bd38bcda2d698b0a6c8da2f6ae397d1250b6c012df82bf86e9ab
+  hash:          000c97c16b850c7ea0e98a7d539a4752f9e5a185fb86cdb353d51890d267bd74
+  difficulty:    3
+  nonce:         516
+  bandymai:      517
+  kasimo laikas: 0.000164 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000676  nerado
+                  2           100      1      2000   0.000612  nerado
+                  3           100      1       517   0.000164  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #9
+  transakcijos:  100
+  prev_hash:     000c97c16b850c7ea0e98a7d539a4752f9e5a185fb86cdb353d51890d267bd74
+  tx_root:       2fd924f29b4093a936ce30b05526bef536fbaf086685e7579cc1f77bff617695
+  hash:          000a1c7838840bda59c4397009e17784ea9473d814541ba86fdcc7f2f638cf86
+  difficulty:    3
+  nonce:         941
+  bandymai:      942
+  kasimo laikas: 0.000470 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       942   0.000470  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #10
+  transakcijos:  100
+  prev_hash:     000a1c7838840bda59c4397009e17784ea9473d814541ba86fdcc7f2f638cf86
+  tx_root:       7045e5425f60ac3d7f06767d0ca6e78eec85dead95fa6f5253ab2a6eb70ea46b
+  hash:          000f917fe85ad125d27dde42ee7fb050a4f9525e85cbe0e3ba0369928d9b883c
+  difficulty:    3
+  nonce:         982
+  bandymai:      983
+  kasimo laikas: 0.000340 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000629  nerado
+                  2           100      1      2000   0.000633  nerado
+                  3           100      1      2000   0.000625  nerado
+                  4           100      1      2000   0.000694  nerado
+                  5           100      1       983   0.000340  laimejo
+Blokas #11
+  transakcijos:  100
+  prev_hash:     000f917fe85ad125d27dde42ee7fb050a4f9525e85cbe0e3ba0369928d9b883c
+  tx_root:       c78085a72cc43ca384ebe15fea096d10ed75cc716fbf8fb77e96dfe2e20adaa3
+  hash:          000c4fa48f6cb67245c4019c386a1c0cad168b509b6e6817941c3ed1be17bdc2
+  difficulty:    3
+  nonce:         1126
+  bandymai:      1127
+  kasimo laikas: 0.000467 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1127   0.000467  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #12
+  transakcijos:  100
+  prev_hash:     000c4fa48f6cb67245c4019c386a1c0cad168b509b6e6817941c3ed1be17bdc2
+  tx_root:       b3a0d8ddeb0a1cede0acc8752f76ac8bcc6460b6725ef48641fcd3b68bdce3cd
+  hash:          0002efe62eae1a845b77e31bc5435d8f581ca9a89fb7e2303772857a1b8af509
+  difficulty:    3
+  nonce:         369
+  bandymai:      370
+  kasimo laikas: 0.000133 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000734  nerado
+                  2           100      1       370   0.000133  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #13
+  transakcijos:  100
+  prev_hash:     0002efe62eae1a845b77e31bc5435d8f581ca9a89fb7e2303772857a1b8af509
+  tx_root:       b7f181bc7b89f9fba9d4976a5c8bce419465a8533dd98657b227975f86fed1a8
+  hash:          000e72f5817e30cceca3e5d5f4e636356ea7f1436ebba03a8dc7a79d412768a6
+  difficulty:    3
+  nonce:         1376
+  bandymai:      1377
+  kasimo laikas: 0.000840 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000752  nerado
+                  2           100      1      2000   0.002165  nerado
+                  3           100      1      1377   0.000840  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #14
+  transakcijos:  100
+  prev_hash:     000e72f5817e30cceca3e5d5f4e636356ea7f1436ebba03a8dc7a79d412768a6
+  tx_root:       9d1f045f5c595b637ab05676589b74551c110fc93a9cbd3d97075c8dfc09efa8
+  hash:          0005af96bce28226f453e7f04590da37d37e32ab80237ee458d65c87aaf71430
+  difficulty:    3
+  nonce:         1550
+  bandymai:      1551
+  kasimo laikas: 0.000481 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000937  nerado
+                  2           100      1      2000   0.000664  nerado
+                  3           100      1      2000   0.000606  nerado
+                  4           100      1      1551   0.000481  laimejo
+                  5           100      0         0   0.000000  nekase
+Blokas #15
+  transakcijos:  100
+  prev_hash:     0005af96bce28226f453e7f04590da37d37e32ab80237ee458d65c87aaf71430
+  tx_root:       789e717802a9d5f480230b4ae5e2b1b03709a5bfbde6d257ab81a5f37faf09f2
+  hash:          0007e5206ed9c345eea28a4fa40b2ab72164ed701b17c1a8e61a601366801443
+  difficulty:    3
+  nonce:         830
+  bandymai:      831
+  kasimo laikas: 0.000277 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       831   0.000277  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #16
+  transakcijos:  100
+  prev_hash:     0007e5206ed9c345eea28a4fa40b2ab72164ed701b17c1a8e61a601366801443
+  tx_root:       8ac00b7091b4909b70c9b1debc82f42b9334b50d093fe3074829747e7adb8542
+  hash:          000a1c8c32e553aeaa0070bf8e02b46ac39dcb84d54ddb5fdafe4895169cace6
+  difficulty:    3
+  nonce:         71
+  bandymai:      72
+  kasimo laikas: 0.000023 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1        72   0.000023  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #17
+  transakcijos:  100
+  prev_hash:     000a1c8c32e553aeaa0070bf8e02b46ac39dcb84d54ddb5fdafe4895169cace6
+  tx_root:       710518ac2f32cbb629c45b545a9400e753aedda2d03cd38df6b630b465ac28b4
+  hash:          000ab99d88336354855511dad1f2e2dd7e061208c54dde027bae256bb638903f
+  difficulty:    3
+  nonce:         838
+  bandymai:      839
+  kasimo laikas: 0.000270 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000600  nerado
+                  2           100      1       839   0.000270  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #18
+  transakcijos:  100
+  prev_hash:     000ab99d88336354855511dad1f2e2dd7e061208c54dde027bae256bb638903f
+  tx_root:       bf2ba9d0d17e06774bba367acd8f2b762eef21bfbbfac2e03f2d81b24b2fcc52
+  hash:          0000f2b8567517fcc56fcee10b783599a5d233ff2bcce38092bd422e66d2b17b
+  difficulty:    3
+  nonce:         406
+  bandymai:      407
+  kasimo laikas: 0.000134 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000638  nerado
+                  2           100      1      2000   0.000713  nerado
+                  3           100      1       407   0.000134  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #19
+  transakcijos:  100
+  prev_hash:     0000f2b8567517fcc56fcee10b783599a5d233ff2bcce38092bd422e66d2b17b
+  tx_root:       df07fc895c80fc50cf8a163e9f158617cb880e5426694e48968476a4b3aa8a0a
+  hash:          000c9afebc8b5d1b2edc3e39ce17d8a25d0a892fbd0d258c2000fe9f223d0d9b
+  difficulty:    3
+  nonce:         1285
+  bandymai:      1286
+  kasimo laikas: 0.000416 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000633  nerado
+                  2           100      1      2000   0.000628  nerado
+                  3           100      1      2000   0.000626  nerado
+                  4           100      1      1286   0.000416  laimejo
+                  5           100      0         0   0.000000  nekase
+Blokas #20
+  transakcijos:  100
+  prev_hash:     000c9afebc8b5d1b2edc3e39ce17d8a25d0a892fbd0d258c2000fe9f223d0d9b
+  tx_root:       76d7cac1b0d64d4380244cde6af3ffeb852ef4e0a18bde50a91dbbbfe3fb2423
+  hash:          00092fa1b0e2bedeffcfce825f84d9d97bdb904c4c285bfd1559178747abc972
+  difficulty:    3
+  nonce:         1526
+  bandymai:      1527
+  kasimo laikas: 0.000470 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1527   0.000470  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #21
+  transakcijos:  100
+  prev_hash:     00092fa1b0e2bedeffcfce825f84d9d97bdb904c4c285bfd1559178747abc972
+  tx_root:       948bcf1550831b89557bf8af5d58b369cc59628afcc981867f74cbc5d8dc8ca3
+  hash:          0000fb9292163d78569892e7a1dcc93f5cf751e24de237e1ecdebfeac4d59a0f
+  difficulty:    3
+  nonce:         661
+  bandymai:      662
+  kasimo laikas: 0.000216 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000610  nerado
+                  2           100      1       662   0.000216  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #22
+  transakcijos:  100
+  prev_hash:     0000fb9292163d78569892e7a1dcc93f5cf751e24de237e1ecdebfeac4d59a0f
+  tx_root:       fdd4e97df0a4667e64c40eeaf432714919cad99b2a12831b57ef4e4f7fe34fe6
+  hash:          000e36673a07b54b2c281b6442e672ab9e2ca63771259606f5bf5f3b362fb688
+  difficulty:    3
+  nonce:         538
+  bandymai:      539
+  kasimo laikas: 0.000233 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000727  nerado
+                  2           100      1       539   0.000233  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #23
+  transakcijos:  100
+  prev_hash:     000e36673a07b54b2c281b6442e672ab9e2ca63771259606f5bf5f3b362fb688
+  tx_root:       b83922366ac10d73cb4da4730209294a919fdaa9ce46cbedf3ff54eca9f30c9d
+  hash:          00084027dfd2f195cad1b1421c75e6682823fa6101b37be80b47d6e09f7c0618
+  difficulty:    3
+  nonce:         1415
+  bandymai:      1416
+  kasimo laikas: 0.000438 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000624  nerado
+                  2           100      1      2000   0.000609  nerado
+                  3           100      1      2000   0.000624  nerado
+                  4           100      1      2000   0.000613  nerado
+                  5           100      1      1416   0.000438  laimejo
+Blokas #24
+  transakcijos:  100
+  prev_hash:     00084027dfd2f195cad1b1421c75e6682823fa6101b37be80b47d6e09f7c0618
+  tx_root:       b5db2b4937d5aa75855c1ed99d2ad377a1eacee28d5ce95b2427b7a9a296353a
+  hash:          0005c8cf6f4db02f87e5e378f913b48ebf643292e9c80144141da0001840c7ba
+  difficulty:    3
+  nonce:         1977
+  bandymai:      1978
+  kasimo laikas: 0.000607 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1978   0.000607  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #25
+  transakcijos:  100
+  prev_hash:     0005c8cf6f4db02f87e5e378f913b48ebf643292e9c80144141da0001840c7ba
+  tx_root:       e4c4b5e5639d078f2e0cba70a216cc3b459df0556248e78b8b8b17af05d93bfa
+  hash:          000edcb1d4fb9026f71bc0ec428e501cc1629e7f15be98a518389af6f349b52e
+  difficulty:    3
+  nonce:         21
+  bandymai:      22
+  kasimo laikas: 0.000008 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1        22   0.000008  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #26
+  transakcijos:  100
+  prev_hash:     000edcb1d4fb9026f71bc0ec428e501cc1629e7f15be98a518389af6f349b52e
+  tx_root:       2e93573b701cdd4b20773ce20bb16a7126150efb9146841e7d88caeaad34f54b
+  hash:          00023d8b3ba3ecdf143460d02c89d82a8230bfd755e48c49ad30cba0fd964e4e
+  difficulty:    3
+  nonce:         1068
+  bandymai:      1069
+  kasimo laikas: 0.000351 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1069   0.000351  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #27
+  transakcijos:  100
+  prev_hash:     00023d8b3ba3ecdf143460d02c89d82a8230bfd755e48c49ad30cba0fd964e4e
+  tx_root:       e7505b078341a6f7886e38974fa6e577ac95656739b838c1bad06d4048b0ca4f
+  hash:          0006641d3b9a263b2c2f56cf747c0a6aa302d608245f211f32f0224f5056d064
+  difficulty:    3
+  nonce:         1055
+  bandymai:      1056
+  kasimo laikas: 0.000349 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000842  nerado
+                  2           100      1      1056   0.000349  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #28
+  transakcijos:  100
+  prev_hash:     0006641d3b9a263b2c2f56cf747c0a6aa302d608245f211f32f0224f5056d064
+  tx_root:       03ce0744c394d2821d34eb9e388e1ae87389fa34c95434e3d316e5dc8c383ad8
+  hash:          000ab36a2fbe6eb62a851c384b16d7e91172083765a4d36f31c337b9a5afbb63
+  difficulty:    3
+  nonce:         1895
+  bandymai:      1896
+  kasimo laikas: 0.000590 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000623  nerado
+                  2           100      1      1896   0.000590  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #29
+  transakcijos:  100
+  prev_hash:     000ab36a2fbe6eb62a851c384b16d7e91172083765a4d36f31c337b9a5afbb63
+  tx_root:       e66ecfde29ef6cb69ed995b595ec175568631dcd2d7beaa0ffb9a4b0c882a38c
+  hash:          00051e8ef438e9cff453f20c45add4e6190378a52528e233043a8d4599cd34c6
+  difficulty:    3
+  nonce:         1511
+  bandymai:      1512
+  kasimo laikas: 0.000521 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000623  nerado
+                  2           100      1      2000   0.000612  nerado
+                  3           100      1      1512   0.000521  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #30
+  transakcijos:  100
+  prev_hash:     00051e8ef438e9cff453f20c45add4e6190378a52528e233043a8d4599cd34c6
+  tx_root:       1814586eb8bce631433cb4f8e7ab71c5fe3506f34227497ce956acc27590c205
+  hash:          000c06e722d5c5386846a42a7c90c609dd9ddc9e4ed15aed41ae71e9cdc5e54c
+  difficulty:    3
+  nonce:         144
+  bandymai:      145
+  kasimo laikas: 0.000045 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       145   0.000045  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #31
+  transakcijos:  100
+  prev_hash:     000c06e722d5c5386846a42a7c90c609dd9ddc9e4ed15aed41ae71e9cdc5e54c
+  tx_root:       238151025d377b54d04243012fd626eabd6e796e09631965d562cdfcb1bf36c3
+  hash:          000e4ec6cb0a02b8f71255233a3ce9046b7c75f88f94012bd1f145a58a0b5104
+  difficulty:    3
+  nonce:         2272
+  bandymai:      2273
+  kasimo laikas: 0.000721 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      2      6000   0.001883  nerado
+                  2           100      2      2273   0.000721  laimejo
+                  3           100      1      2000   0.000665  nerado
+                  4           100      1      2000   0.000628  nerado
+                  5           100      1      2000   0.000631  nerado
+Blokas #32
+  transakcijos:  100
+  prev_hash:     000e4ec6cb0a02b8f71255233a3ce9046b7c75f88f94012bd1f145a58a0b5104
+  tx_root:       6927ecf16a9bb030ea3ea38e63a50adc7e43c44510b656ae95eb70a069daf8b7
+  hash:          0008414324dd207270b33d4ca7b400dfd9daeb9bffedc872d163759498136c19
+  difficulty:    3
+  nonce:         277
+  bandymai:      278
+  kasimo laikas: 0.000104 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000620  nerado
+                  2           100      1      2000   0.000623  nerado
+                  3           100      1       278   0.000104  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #33
+  transakcijos:  100
+  prev_hash:     0008414324dd207270b33d4ca7b400dfd9daeb9bffedc872d163759498136c19
+  tx_root:       5ed6fc15af5f8b27c275d32cc57b44a290ce7c9b71a491ea34a79b73357a4132
+  hash:          00088773bbca20d7f011e3360474beec98178bcef767059d3473faa73482015b
+  difficulty:    3
+  nonce:         1029
+  bandymai:      1030
+  kasimo laikas: 0.000370 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1030   0.000370  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #34
+  transakcijos:  100
+  prev_hash:     00088773bbca20d7f011e3360474beec98178bcef767059d3473faa73482015b
+  tx_root:       c3f93e5b5fa3274c5b4cdc3366212d8966e9e9863c162e548ac748f2087e7aa6
+  hash:          0003be68c6b59c32e7fdd6e66c149a75b6da1ceaa8ce0c1840362759fcc9669d
+  difficulty:    3
+  nonce:         918
+  bandymai:      919
+  kasimo laikas: 0.000291 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000615  nerado
+                  2           100      1      2000   0.000601  nerado
+                  3           100      1       919   0.000291  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #35
+  transakcijos:  100
+  prev_hash:     0003be68c6b59c32e7fdd6e66c149a75b6da1ceaa8ce0c1840362759fcc9669d
+  tx_root:       326dc8ea66920f84632eb52e700a0f0d16bb4e882044c61c079d9d8c2dc168bd
+  hash:          000bd6e3b905819c37f98a28fd2b78a76bd79dead0511fd808f8a5c64d95ee12
+  difficulty:    3
+  nonce:         1476
+  bandymai:      1477
+  kasimo laikas: 0.000459 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000629  nerado
+                  2           100      1      2000   0.000619  nerado
+                  3           100      1      1477   0.000459  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #36
+  transakcijos:  100
+  prev_hash:     000bd6e3b905819c37f98a28fd2b78a76bd79dead0511fd808f8a5c64d95ee12
+  tx_root:       bef645c3e7726f462c2b57f7ec296f35a609c8ac0075474d4fef4397b9969980
+  hash:          000bc7fb450cdf6bd7399cf1f397a2e29d8a21a768a3eef2fdd1f1036f74d8a9
+  difficulty:    3
+  nonce:         690
+  bandymai:      691
+  kasimo laikas: 0.000220 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000625  nerado
+                  2           100      1      2000   0.000746  nerado
+                  3           100      1       691   0.000220  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #37
+  transakcijos:  100
+  prev_hash:     000bc7fb450cdf6bd7399cf1f397a2e29d8a21a768a3eef2fdd1f1036f74d8a9
+  tx_root:       e6e065e75ebc3b4c92f4e82b6942afc575f4597178b661c0016df3f67439b231
+  hash:          000f0623260801cd2945153a757440e1aa241119a6c55ef09bc961d65c38f68a
+  difficulty:    3
+  nonce:         210
+  bandymai:      211
+  kasimo laikas: 0.000067 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000624  nerado
+                  2           100      1       211   0.000067  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #38
+  transakcijos:  100
+  prev_hash:     000f0623260801cd2945153a757440e1aa241119a6c55ef09bc961d65c38f68a
+  tx_root:       7aa2121eca65a4f5026fab07593e1c28d4794c3b5b849cf8fca2f4b0061337ac
+  hash:          000a88f163079fabf7f7d240a1f1d4dcfe48014de118390952ba3338067a2791
+  difficulty:    3
+  nonce:         1338
+  bandymai:      1339
+  kasimo laikas: 0.000419 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000600  nerado
+                  2           100      1      1339   0.000419  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #39
+  transakcijos:  100
+  prev_hash:     000a88f163079fabf7f7d240a1f1d4dcfe48014de118390952ba3338067a2791
+  tx_root:       c4f9a8581bf3e8a70bcb414a4d5f323d322816ad462153027e95aef7edaa0a75
+  hash:          000381e7f44ab43bf24691138f53e77e5a294d4c537f67a04511fac20f50e08b
+  difficulty:    3
+  nonce:         404
+  bandymai:      405
+  kasimo laikas: 0.000130 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       405   0.000130  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #40
+  transakcijos:  100
+  prev_hash:     000381e7f44ab43bf24691138f53e77e5a294d4c537f67a04511fac20f50e08b
+  tx_root:       f8f3d908dae41b4f6458ce245ccefaccf0662d6af3a35a529ed95c9c0137510e
+  hash:          00083c3d771677578e009d8a5541b20e16ba7e60f0637c7b45e73e5012cb6697
+  difficulty:    3
+  nonce:         227
+  bandymai:      228
+  kasimo laikas: 0.000072 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000629  nerado
+                  2           100      1       228   0.000072  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #41
+  transakcijos:  100
+  prev_hash:     00083c3d771677578e009d8a5541b20e16ba7e60f0637c7b45e73e5012cb6697
+  tx_root:       61e2c33f4509831254770217b6470b4aa3256240fd4ace729fd7efc7cc033ce0
+  hash:          0009a0e106879fed70878ee0ec482894ee4775d56222f75d05a2c94a8851046a
+  difficulty:    3
+  nonce:         216
+  bandymai:      217
+  kasimo laikas: 0.000068 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       217   0.000068  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #42
+  transakcijos:  100
+  prev_hash:     0009a0e106879fed70878ee0ec482894ee4775d56222f75d05a2c94a8851046a
+  tx_root:       d50fa6fb5f707959a9f48951604c1376ddc1fbf73725e62b002f1d0c2479cf90
+  hash:          000bbdfe05be0fc0dbc764b6363ba8e3a380229e0f1d7f1062520c26d12075c5
+  difficulty:    3
+  nonce:         1204
+  bandymai:      1205
+  kasimo laikas: 0.000380 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000615  nerado
+                  2           100      1      1205   0.000380  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #43
+  transakcijos:  100
+  prev_hash:     000bbdfe05be0fc0dbc764b6363ba8e3a380229e0f1d7f1062520c26d12075c5
+  tx_root:       f5e16bca9a1c3635213bbc7545642aa3db1dd708fe5446479a259d39a86bd11a
+  hash:          000031884656f2e40e3518b73e25336f0fd5909ef18ccb6ad8fdcfcedbf555ef
+  difficulty:    3
+  nonce:         603
+  bandymai:      604
+  kasimo laikas: 0.000246 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       604   0.000246  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #44
+  transakcijos:  100
+  prev_hash:     000031884656f2e40e3518b73e25336f0fd5909ef18ccb6ad8fdcfcedbf555ef
+  tx_root:       3ef349c6f3ca088754137a24ca068f23d3e8a53b280318c8a7bb5cfc8aacb0dd
+  hash:          000ea9463611ef004607fc8ffd84f626259c15721b5d2fb8fa9b5fb66d0cdefa
+  difficulty:    3
+  nonce:         1901
+  bandymai:      1902
+  kasimo laikas: 0.000606 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1902   0.000606  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #45
+  transakcijos:  100
+  prev_hash:     000ea9463611ef004607fc8ffd84f626259c15721b5d2fb8fa9b5fb66d0cdefa
+  tx_root:       d0c689ee2d0309eb5d7e6c769d1daab1dce9a3e7cc539406115d9d205cec5402
+  hash:          00091d81abf2eb7256ff89b9bf661cbfdf7c25e931ced380e8e21e257aa57607
+  difficulty:    3
+  nonce:         1092
+  bandymai:      1093
+  kasimo laikas: 0.000357 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1093   0.000357  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #46
+  transakcijos:  100
+  prev_hash:     00091d81abf2eb7256ff89b9bf661cbfdf7c25e931ced380e8e21e257aa57607
+  tx_root:       d0b47f9c72a0ecaa0732eca603c214846eee2bf4da37dfa463dfe9b8cfd8576c
+  hash:          000d7805d85e6bf9f395725399e7b89bf919398aa1bd906e5beed6b3fc42ce76
+  difficulty:    3
+  nonce:         1557
+  bandymai:      1558
+  kasimo laikas: 0.000491 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000634  nerado
+                  2           100      1      1558   0.000491  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #47
+  transakcijos:  100
+  prev_hash:     000d7805d85e6bf9f395725399e7b89bf919398aa1bd906e5beed6b3fc42ce76
+  tx_root:       5dc8fdc23bfd408f50e1be185b5be539d70dcfc0271f8f25d05d79c782b2c91a
+  hash:          000020025dc5aa4c66435807f23aa7bb6349e9d95b67223396f8b6356ac30e80
+  difficulty:    3
+  nonce:         1380
+  bandymai:      1381
+  kasimo laikas: 0.000448 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1381   0.000448  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #48
+  transakcijos:  100
+  prev_hash:     000020025dc5aa4c66435807f23aa7bb6349e9d95b67223396f8b6356ac30e80
+  tx_root:       de7870823d84b40ce1b4e0905892564eb3dbfd721740e6dbe135fe722c958be6
+  hash:          000f2f41dcbe39ecc2530f34a726038e312e3cdb2b3dba151a57312fbd3b1faa
+  difficulty:    3
+  nonce:         5062
+  bandymai:      5063
+  kasimo laikas: 0.001507 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      2      5063   0.001507  laimejo
+                  2           100      1      2000   0.000606  nerado
+                  3           100      1      2000   0.000620  nerado
+                  4           100      1      2000   0.000605  nerado
+                  5           100      1      2000   0.000607  nerado
+Blokas #49
+  transakcijos:  100
+  prev_hash:     000f2f41dcbe39ecc2530f34a726038e312e3cdb2b3dba151a57312fbd3b1faa
+  tx_root:       55a97bc381f7c8109d13256180db10084470679bc414f008d27738cdf1b1ff34
+  hash:          0007cdeb60f99b97a7285540448ed2e0e6dae3c79d2492cc34abe2759adcfaed
+  difficulty:    3
+  nonce:         181
+  bandymai:      182
+  kasimo laikas: 0.000060 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       182   0.000060  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #50
+  transakcijos:  100
+  prev_hash:     0007cdeb60f99b97a7285540448ed2e0e6dae3c79d2492cc34abe2759adcfaed
+  tx_root:       94db90f5f1d8e7e1d94101d9b6b12809164bf465c58fc0d2f13ea4097714ff62
+  hash:          00006431c89909849ff93fd2f8b5dd494e792d22e47e833e24894014545105b0
+  difficulty:    3
+  nonce:         652
+  bandymai:      653
+  kasimo laikas: 0.000237 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000631  nerado
+                  2           100      1       653   0.000237  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #51
+  transakcijos:  100
+  prev_hash:     00006431c89909849ff93fd2f8b5dd494e792d22e47e833e24894014545105b0
+  tx_root:       a6f0c5b7f2abb05cb0f69eabce663d6721a19a579d27ac022a4b400d3cd1c9c0
+  hash:          00075562ccbf197e41e6aafa2a051a5a15e9bb2c82ba5192ffd81fd308b4bba1
+  difficulty:    3
+  nonce:         1722
+  bandymai:      1723
+  kasimo laikas: 0.000596 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1723   0.000596  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #52
+  transakcijos:  100
+  prev_hash:     00075562ccbf197e41e6aafa2a051a5a15e9bb2c82ba5192ffd81fd308b4bba1
+  tx_root:       57c9077ff5bfcc0dd6b769bd8d21d5b3062f9bb7bc08acd06790b8c19a0fee56
+  hash:          000dab205fa65b4166adb1fa5c54d4738485b5631d3235251bade4aa341bce56
+  difficulty:    3
+  nonce:         84
+  bandymai:      85
+  kasimo laikas: 0.000028 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000661  nerado
+                  2           100      1        85   0.000028  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #53
+  transakcijos:  100
+  prev_hash:     000dab205fa65b4166adb1fa5c54d4738485b5631d3235251bade4aa341bce56
+  tx_root:       d4f3eac43d2cfb322ff1bd50eb4120bf3ffbc693771d9d86caba56d68cc2ffda
+  hash:          000f66764ebb2e8d34683f37f9e849500703fb0e29af4fbcafbab2890a5273dc
+  difficulty:    3
+  nonce:         418
+  bandymai:      419
+  kasimo laikas: 0.000133 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       419   0.000133  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #54
+  transakcijos:  100
+  prev_hash:     000f66764ebb2e8d34683f37f9e849500703fb0e29af4fbcafbab2890a5273dc
+  tx_root:       eabe8d3f42c613eb19d10f1b00eaa170c28df77b474c92f3b06e4ff47768e82c
+  hash:          000278aa606a6888022d49355311477eca364ff18530a21213ba84da05b8f718
+  difficulty:    3
+  nonce:         1806
+  bandymai:      1807
+  kasimo laikas: 0.000566 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000620  nerado
+                  2           100      1      2000   0.000635  nerado
+                  3           100      1      1807   0.000566  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #55
+  transakcijos:  100
+  prev_hash:     000278aa606a6888022d49355311477eca364ff18530a21213ba84da05b8f718
+  tx_root:       5df88ad95397ccb3ee87b633c9187a58c922efd022c94b5cf846090b7e79fc61
+  hash:          00052872949fea4760f57cebfb9da9222ed8740671e2246a262bce83bb380940
+  difficulty:    3
+  nonce:         637
+  bandymai:      638
+  kasimo laikas: 0.000206 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000602  nerado
+                  2           100      1      2000   0.000616  nerado
+                  3           100      1       638   0.000206  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #56
+  transakcijos:  100
+  prev_hash:     00052872949fea4760f57cebfb9da9222ed8740671e2246a262bce83bb380940
+  tx_root:       2bca0aa51625ca38d02131a2b736e4def6b9d056255a1d37a9ccb1a6ed62cd41
+  hash:          0007ba5bdff7a8d6905cafbdee862acba3d228d265fc1e8290db74cff58c9365
+  difficulty:    3
+  nonce:         988
+  bandymai:      989
+  kasimo laikas: 0.000353 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000613  nerado
+                  2           100      1       989   0.000353  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #57
+  transakcijos:  100
+  prev_hash:     0007ba5bdff7a8d6905cafbdee862acba3d228d265fc1e8290db74cff58c9365
+  tx_root:       d5161607414560d02f888dff37f062b4f5759c507784b2c69d7c619e155dd419
+  hash:          0004a6145e88a92827b610d39d0e78355e5f03b8c7e63d4012551617417c0374
+  difficulty:    3
+  nonce:         1928
+  bandymai:      1929
+  kasimo laikas: 0.000576 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000678  nerado
+                  2           100      1      2000   0.000622  nerado
+                  3           100      1      2000   0.000603  nerado
+                  4           100      1      2000   0.000620  nerado
+                  5           100      1      1929   0.000576  laimejo
+Blokas #58
+  transakcijos:  100
+  prev_hash:     0004a6145e88a92827b610d39d0e78355e5f03b8c7e63d4012551617417c0374
+  tx_root:       dcb38967182c16245171cb31590de4b566283d75b0d420b2fa535fb03994705a
+  hash:          00049df86606a261aecc6a07a90c7a027c0a497f7147a0c1e8b5424000884f32
+  difficulty:    3
+  nonce:         506
+  bandymai:      507
+  kasimo laikas: 0.000161 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       507   0.000161  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #59
+  transakcijos:  100
+  prev_hash:     00049df86606a261aecc6a07a90c7a027c0a497f7147a0c1e8b5424000884f32
+  tx_root:       97dc8c261806af90e458bd8e58f37c8a08b258c359f7202f2ff96f1bb9be7869
+  hash:          00008da90ce2e03166376a82691f353ac62edeaa98ad7166d124f3a15ad253a3
+  difficulty:    3
+  nonce:         495
+  bandymai:      496
+  kasimo laikas: 0.000158 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       496   0.000158  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #60
+  transakcijos:  100
+  prev_hash:     00008da90ce2e03166376a82691f353ac62edeaa98ad7166d124f3a15ad253a3
+  tx_root:       00805abf1257b8d8e19d75ff7b9620cf261649a877a47b648e97a84f27110e66
+  hash:          0000551a76ee8c7f216ff81fc2a3b36cb8036094350579d011d2d23bd2d73d5d
+  difficulty:    3
+  nonce:         1814
+  bandymai:      1815
+  kasimo laikas: 0.000582 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1815   0.000582  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #61
+  transakcijos:  100
+  prev_hash:     0000551a76ee8c7f216ff81fc2a3b36cb8036094350579d011d2d23bd2d73d5d
+  tx_root:       05bbfd4bd06f2f9b20bb0cede4251bbd6fab4897da21bf224e5993b478d4ca30
+  hash:          00013e85afadf5eb35bfb977a1e9bcdcc2691321c3d7e43f80d685e5c0de2487
+  difficulty:    3
+  nonce:         75
+  bandymai:      76
+  kasimo laikas: 0.000026 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000624  nerado
+                  2           100      1        76   0.000026  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #62
+  transakcijos:  100
+  prev_hash:     00013e85afadf5eb35bfb977a1e9bcdcc2691321c3d7e43f80d685e5c0de2487
+  tx_root:       30135e1009250d72175ea26a33a7488c4cac10684bdcb2899046beee854709fd
+  hash:          0007db5a12070495e3b58fdbcd563c42c7c21e5865230ab6d70a6ea370254454
+  difficulty:    3
+  nonce:         697
+  bandymai:      698
+  kasimo laikas: 0.000224 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       698   0.000224  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #63
+  transakcijos:  100
+  prev_hash:     0007db5a12070495e3b58fdbcd563c42c7c21e5865230ab6d70a6ea370254454
+  tx_root:       ddfbdd92ef2e2bec317ff0e130bed9b94aed4abdcb7693b3f89642537fe899dd
+  hash:          00090c14e6e6dad916e2863f4828988dbcfe1ad49f9419f4b72c946be01294d9
+  difficulty:    3
+  nonce:         651
+  bandymai:      652
+  kasimo laikas: 0.000205 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000597  nerado
+                  2           100      1       652   0.000205  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #64
+  transakcijos:  100
+  prev_hash:     00090c14e6e6dad916e2863f4828988dbcfe1ad49f9419f4b72c946be01294d9
+  tx_root:       049504760936fee2aeba894a59ed3d96a387a132c4c95f703eee067a2acc1180
+  hash:          000e6af9493d5f1ce60069aeb904dd5e83647620ea5aa281c54769e37e59e2f2
+  difficulty:    3
+  nonce:         2570
+  bandymai:      2571
+  kasimo laikas: 0.000812 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      2      2571   0.000812  laimejo
+                  2           100      1      2000   0.000695  nerado
+                  3           100      1      2000   0.000640  nerado
+                  4           100      1      2000   0.000618  nerado
+                  5           100      1      2000   0.000609  nerado
+Blokas #65
+  transakcijos:  100
+  prev_hash:     000e6af9493d5f1ce60069aeb904dd5e83647620ea5aa281c54769e37e59e2f2
+  tx_root:       65b0e13b06bc4b8fb1fb957cffc7eb3c7e6a630c7e1ba8146dc1c46b3f504b32
+  hash:          0004353b8d4018951e21dcd0c36949e552817b637799817423761bf93ca9f8c2
+  difficulty:    3
+  nonce:         7
+  bandymai:      8
+  kasimo laikas: 0.000004 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000617  nerado
+                  2           100      1      2000   0.000624  nerado
+                  3           100      1      2000   0.000674  nerado
+                  4           100      1      2000   0.000628  nerado
+                  5           100      1         8   0.000004  laimejo
+Blokas #66
+  transakcijos:  100
+  prev_hash:     0004353b8d4018951e21dcd0c36949e552817b637799817423761bf93ca9f8c2
+  tx_root:       1b71845fb55998d90c364bc2dccc623c19c23ced9f95b47b8036ff779f27d7f9
+  hash:          000f3e3eaf42e1403eaf9d889356a1e0b3a9797542108a54059dc5dc3536c7a4
+  difficulty:    3
+  nonce:         485
+  bandymai:      486
+  kasimo laikas: 0.000153 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       486   0.000153  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #67
+  transakcijos:  100
+  prev_hash:     000f3e3eaf42e1403eaf9d889356a1e0b3a9797542108a54059dc5dc3536c7a4
+  tx_root:       94525ccbff47904495b7cb45eef2e159ec6c792d5829d7684989865316ef18bc
+  hash:          000f9406a75438870665ebd45eda4d04ec9365545a3b606115f67a3cb89bf709
+  difficulty:    3
+  nonce:         840
+  bandymai:      841
+  kasimo laikas: 0.000283 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000699  nerado
+                  2           100      1       841   0.000283  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #68
+  transakcijos:  100
+  prev_hash:     000f9406a75438870665ebd45eda4d04ec9365545a3b606115f67a3cb89bf709
+  tx_root:       1b9827eaff733e8813e6d44c3cfc63c5a967638ebebc9a5bb893b0ad4ccf1900
+  hash:          000953a75b67b9f260de8d69aca3dfaa718601ad51eadb6f69f990a9e0485b6d
+  difficulty:    3
+  nonce:         761
+  bandymai:      762
+  kasimo laikas: 0.000250 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       762   0.000250  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #69
+  transakcijos:  100
+  prev_hash:     000953a75b67b9f260de8d69aca3dfaa718601ad51eadb6f69f990a9e0485b6d
+  tx_root:       e685c9ef497945e0b5261c3a70e552b11ce16b9b1adcdad26ce302a5a711faef
+  hash:          000f74d9e8eb9e872acb3c5492ec44954d7fea59803fa253bc5caa562167c762
+  difficulty:    3
+  nonce:         1005
+  bandymai:      1006
+  kasimo laikas: 0.000330 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000646  nerado
+                  2           100      1      1006   0.000330  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #70
+  transakcijos:  100
+  prev_hash:     000f74d9e8eb9e872acb3c5492ec44954d7fea59803fa253bc5caa562167c762
+  tx_root:       686c9477700c771274f7254cc55103fe30de62f6979af1987e660af74ecc9b24
+  hash:          000b32fa11ae48c4337c308e2425420b374f302c104e7df74adb1793068aab9c
+  difficulty:    3
+  nonce:         1597
+  bandymai:      1598
+  kasimo laikas: 0.000499 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000648  nerado
+                  2           100      1      1598   0.000499  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #71
+  transakcijos:  100
+  prev_hash:     000b32fa11ae48c4337c308e2425420b374f302c104e7df74adb1793068aab9c
+  tx_root:       b6efe4cbcb8250a0dd78c0883e54533be7c47f2ad38693a3aeeb5c2e9af73451
+  hash:          0004c54ea495f7da6331d71d72dfbc824cb78ddc28d4b5ad8d57ccb7c44d2d2f
+  difficulty:    3
+  nonce:         248
+  bandymai:      249
+  kasimo laikas: 0.000082 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000633  nerado
+                  2           100      1       249   0.000082  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #72
+  transakcijos:  100
+  prev_hash:     0004c54ea495f7da6331d71d72dfbc824cb78ddc28d4b5ad8d57ccb7c44d2d2f
+  tx_root:       ee3b47a4274de020762d357238e0391b42f609e50f8968af6f8f45097207b76d
+  hash:          000860559776ca4b4c903f7abf643b27786a2cf9967d34dab4ced5210c3a59bd
+  difficulty:    3
+  nonce:         1532
+  bandymai:      1533
+  kasimo laikas: 0.000507 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000638  nerado
+                  2           100      1      2000   0.000653  nerado
+                  3           100      1      2000   0.000623  nerado
+                  4           100      1      2000   0.000628  nerado
+                  5           100      1      1533   0.000507  laimejo
+Blokas #73
+  transakcijos:  100
+  prev_hash:     000860559776ca4b4c903f7abf643b27786a2cf9967d34dab4ced5210c3a59bd
+  tx_root:       0f10dfbd01f662c08783ea7bf84e2d8325ed97d432e21c706631b1c0ac464122
+  hash:          000a88c1aad2ba5fa07f74babce243bd385a1baba852906386b090a7c6973857
+  difficulty:    3
+  nonce:         1432
+  bandymai:      1433
+  kasimo laikas: 0.000471 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1433   0.000471  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #74
+  transakcijos:  100
+  prev_hash:     000a88c1aad2ba5fa07f74babce243bd385a1baba852906386b090a7c6973857
+  tx_root:       36a24f8ea4c698f83d0c1e28e92b268487125c0670ed60ea6fc72fac883c9e05
+  hash:          0001bc12347d3a1d57776486e42ab5ce3bf343c93a4c1c2c3077af2df11d36fe
+  difficulty:    3
+  nonce:         474
+  bandymai:      475
+  kasimo laikas: 0.000152 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       475   0.000152  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #75
+  transakcijos:  100
+  prev_hash:     0001bc12347d3a1d57776486e42ab5ce3bf343c93a4c1c2c3077af2df11d36fe
+  tx_root:       8f2b2b67655e64dd2793653fa0a2e26e56d27ff960850b77ac226ed349f63a68
+  hash:          0008dfdc087a30fd23ba3655525527893d281ba4853cda02db2b86170fd8859c
+  difficulty:    3
+  nonce:         1283
+  bandymai:      1284
+  kasimo laikas: 0.000441 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1284   0.000441  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #76
+  transakcijos:  100
+  prev_hash:     0008dfdc087a30fd23ba3655525527893d281ba4853cda02db2b86170fd8859c
+  tx_root:       c16c32cececd90fd923800a8f64dab6b741eca6a74ecee7063597feb05f62ab4
+  hash:          000d35aa8f145f2a4248034b4d2a74647923fcf60c04f7d06c7eeb1158a0c6d6
+  difficulty:    3
+  nonce:         901
+  bandymai:      902
+  kasimo laikas: 0.000339 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       902   0.000339  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #77
+  transakcijos:  100
+  prev_hash:     000d35aa8f145f2a4248034b4d2a74647923fcf60c04f7d06c7eeb1158a0c6d6
+  tx_root:       aa9777a9ff96320c59f6f86ebc3fd7ffef4c37111c8ca81765148822aca4d4ca
+  hash:          0006d50caed8a78c226f2615d27b7356461556e18a20722857fc96e40d65649a
+  difficulty:    3
+  nonce:         136
+  bandymai:      137
+  kasimo laikas: 0.000043 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       137   0.000043  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #78
+  transakcijos:  100
+  prev_hash:     0006d50caed8a78c226f2615d27b7356461556e18a20722857fc96e40d65649a
+  tx_root:       d9f411ce4e3cbd502972c474e05d29488112b01b29d5a1037161165a4c69721a
+  hash:          0003c4b3bdf6d42cbd001215df50019171342ccc0dd8ba69235f41b637c4c600
+  difficulty:    3
+  nonce:         46
+  bandymai:      47
+  kasimo laikas: 0.000015 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000686  nerado
+                  2           100      1      2000   0.000597  nerado
+                  3           100      1      2000   0.000623  nerado
+                  4           100      1      2000   0.000611  nerado
+                  5           100      1        47   0.000015  laimejo
+Blokas #79
+  transakcijos:  100
+  prev_hash:     0003c4b3bdf6d42cbd001215df50019171342ccc0dd8ba69235f41b637c4c600
+  tx_root:       649ecbe1ecaa7623eeed4498dc383a82794ade78cb8660310fee74b42312981c
+  hash:          00011f794515ae97fceff7691774b0067e313c9dfb23c679bc2d0e482a553297
+  difficulty:    3
+  nonce:         1491
+  bandymai:      1492
+  kasimo laikas: 0.000471 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1492   0.000471  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #80
+  transakcijos:  100
+  prev_hash:     00011f794515ae97fceff7691774b0067e313c9dfb23c679bc2d0e482a553297
+  tx_root:       36ef4b616826dff686140aee31d3c13ce7ca799595730247817b254b83c2e57b
+  hash:          0005c7e7ef78385ce8f509be1ebf160f89632fb00513f5e385b127c531ea0707
+  difficulty:    3
+  nonce:         1021
+  bandymai:      1022
+  kasimo laikas: 0.000328 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000610  nerado
+                  2           100      1      1022   0.000328  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #81
+  transakcijos:  100
+  prev_hash:     0005c7e7ef78385ce8f509be1ebf160f89632fb00513f5e385b127c531ea0707
+  tx_root:       88346923b2b89932698d995a0bc1961992cb67279b5b41573991d96a008cd2c3
+  hash:          00003c0f07d6b6d07a2d695d047026f2ce26b4332693f07e6374ce894ee16791
+  difficulty:    3
+  nonce:         3062
+  bandymai:      3063
+  kasimo laikas: 0.000954 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      2      6000   0.001792  nerado
+                  2           100      2      3063   0.000954  laimejo
+                  3           100      1      2000   0.000676  nerado
+                  4           100      1      2000   0.000648  nerado
+                  5           100      1      2000   0.000610  nerado
+Blokas #82
+  transakcijos:  100
+  prev_hash:     00003c0f07d6b6d07a2d695d047026f2ce26b4332693f07e6374ce894ee16791
+  tx_root:       c16981b0f91a99dbd3fed2121c2d2f8e4a933fa243d0c8dc7fda32367fa6aace
+  hash:          0001e6dd6e61bbc83edf84238eaf5c0bcb811891596f3a2ac7be50764743460c
+  difficulty:    3
+  nonce:         436
+  bandymai:      437
+  kasimo laikas: 0.000142 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000611  nerado
+                  2           100      1      2000   0.000684  nerado
+                  3           100      1      2000   0.000659  nerado
+                  4           100      1      2000   0.000624  nerado
+                  5           100      1       437   0.000142  laimejo
+Blokas #83
+  transakcijos:  100
+  prev_hash:     0001e6dd6e61bbc83edf84238eaf5c0bcb811891596f3a2ac7be50764743460c
+  tx_root:       2201cdd2d6b23640d1052389622359debf5b33ebb0acc49881ffe56dddd97142
+  hash:          0004ce03c299878dfbe09f3cd5621aa36b1d0025de74c036aebc7a7e98450209
+  difficulty:    3
+  nonce:         3577
+  bandymai:      3578
+  kasimo laikas: 0.001125 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      2      3578   0.001125  laimejo
+                  2           100      1      2000   0.000629  nerado
+                  3           100      1      2000   0.000615  nerado
+                  4           100      1      2000   0.000586  nerado
+                  5           100      1      2000   0.000582  nerado
+Blokas #84
+  transakcijos:  100
+  prev_hash:     0004ce03c299878dfbe09f3cd5621aa36b1d0025de74c036aebc7a7e98450209
+  tx_root:       7eb2be49c6f1bb8707ccff698ace72b894d709d8923eee2a0b41f609de730a6d
+  hash:          00010db7690f88f3ca48a16777d9653e5df49651a2a3b63417af3a8ebb6a0f44
+  difficulty:    3
+  nonce:         1452
+  bandymai:      1453
+  kasimo laikas: 0.000407 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000635  nerado
+                  2           100      1      2000   0.000571  nerado
+                  3           100      1      1453   0.000407  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #85
+  transakcijos:  100
+  prev_hash:     00010db7690f88f3ca48a16777d9653e5df49651a2a3b63417af3a8ebb6a0f44
+  tx_root:       933fa734c208438125b501d9bf76715367377aff432abc20e1b7fd055b1b9962
+  hash:          00092b30e8547aea5f8af4e6eb8c6994720af6bbab86e00de7a818159d775ae2
+  difficulty:    3
+  nonce:         700
+  bandymai:      701
+  kasimo laikas: 0.000201 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1       701   0.000201  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #86
+  transakcijos:  100
+  prev_hash:     00092b30e8547aea5f8af4e6eb8c6994720af6bbab86e00de7a818159d775ae2
+  tx_root:       5db099539798e3d60214251628eb63c3ff6b8269611beefc5ddbf4e118459730
+  hash:          000ae64e40fc3bcf60ac8817ccaa62fe1ce0e0f27cfa9f872cbd652a1d5851b6
+  difficulty:    3
+  nonce:         284
+  bandymai:      285
+  kasimo laikas: 0.000106 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000635  nerado
+                  2           100      1       285   0.000106  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #87
+  transakcijos:  100
+  prev_hash:     000ae64e40fc3bcf60ac8817ccaa62fe1ce0e0f27cfa9f872cbd652a1d5851b6
+  tx_root:       25eeb34d955a864595bbab2bfec9935ae6ec7a46e38a77a1e3038c2355f8fe43
+  hash:          0001e7f42683d7a329a474f30acc6662d6ca81390d96bc73ad87eb33a7c8ab7c
+  difficulty:    3
+  nonce:         1557
+  bandymai:      1558
+  kasimo laikas: 0.000435 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000538  nerado
+                  2           100      1      2000   0.000660  nerado
+                  3           100      1      2000   0.000558  nerado
+                  4           100      1      1558   0.000435  laimejo
+                  5           100      0         0   0.000000  nekase
+Blokas #88
+  transakcijos:  100
+  prev_hash:     0001e7f42683d7a329a474f30acc6662d6ca81390d96bc73ad87eb33a7c8ab7c
+  tx_root:       f27fc8650ed8317bef8e02f16c20ec9eff934467f2da32be13fbb0348d341432
+  hash:          000fad52690349f4cbe345b8dc04b93ce5e529ee5695825745a3a4ca043437bc
+  difficulty:    3
+  nonce:         1387
+  bandymai:      1388
+  kasimo laikas: 0.000387 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1388   0.000387  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #89
+  transakcijos:  100
+  prev_hash:     000fad52690349f4cbe345b8dc04b93ce5e529ee5695825745a3a4ca043437bc
+  tx_root:       63dc5be80b498fd7373ba58a01a36ea558838456b8d0d133b5394155db41e201
+  hash:          000b7c338f887246bdbf712738770763def75185d9aead270b2929a9141ecbe2
+  difficulty:    3
+  nonce:         751
+  bandymai:      752
+  kasimo laikas: 0.000219 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000562  nerado
+                  2           100      1       752   0.000219  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #90
+  transakcijos:  100
+  prev_hash:     000b7c338f887246bdbf712738770763def75185d9aead270b2929a9141ecbe2
+  tx_root:       7a99bed0fee49152a8311115d76ef4929492771f4cc54d6b1afbaea26112ce9b
+  hash:          000c980b76c507a9287b5abdee3a6a8767a843cc0f0d74c8391d86549c4b241d
+  difficulty:    3
+  nonce:         621
+  bandymai:      622
+  kasimo laikas: 0.000181 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000557  nerado
+                  2           100      1       622   0.000181  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #91
+  transakcijos:  100
+  prev_hash:     000c980b76c507a9287b5abdee3a6a8767a843cc0f0d74c8391d86549c4b241d
+  tx_root:       4753793f7b88127b7ed804a4717e26d9a2a8cd37d9ca6c7bac6927f3d4df980a
+  hash:          0005edbcb28f84d6106b78542214a585cd2607eb9d8189530ba34b4350a5aa37
+  difficulty:    3
+  nonce:         4082
+  bandymai:      4083
+  kasimo laikas: 0.001169 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      2      4083   0.001169  laimejo
+                  2           100      1      2000   0.000554  nerado
+                  3           100      1      2000   0.000563  nerado
+                  4           100      1      2000   0.000548  nerado
+                  5           100      1      2000   0.000557  nerado
+Blokas #92
+  transakcijos:  100
+  prev_hash:     0005edbcb28f84d6106b78542214a585cd2607eb9d8189530ba34b4350a5aa37
+  tx_root:       e2422505a705adeafdab10bb2136c13c39e71b4d1e95109f5eb2bc339ea0e8a2
+  hash:          0002fde01be6394d3ff89f8fd65d726614da3174e4c41c314bfd44456d04e8be
+  difficulty:    3
+  nonce:         1483
+  bandymai:      1484
+  kasimo laikas: 0.000429 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1484   0.000429  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #93
+  transakcijos:  100
+  prev_hash:     0002fde01be6394d3ff89f8fd65d726614da3174e4c41c314bfd44456d04e8be
+  tx_root:       be63c2045318ef696c39d66a4eaf2de8ba6c1400fc44d6daf6ea59ed54988de1
+  hash:          000095f69b6301e669eb8c055b8f67999053432843ed955f5a17d98ca34d48b2
+  difficulty:    3
+  nonce:         248
+  bandymai:      249
+  kasimo laikas: 0.000071 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000570  nerado
+                  2           100      1       249   0.000071  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #94
+  transakcijos:  100
+  prev_hash:     000095f69b6301e669eb8c055b8f67999053432843ed955f5a17d98ca34d48b2
+  tx_root:       64eb1e970a765594b9e740dd72947f755ff3de7d05282a94a519238385b7ad2c
+  hash:          0003dbba8e9b3f7563a9693c00295b7ca2412a77118129d26a059a149bc41848
+  difficulty:    3
+  nonce:         1202
+  bandymai:      1203
+  kasimo laikas: 0.000338 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      1203   0.000338  laimejo
+                  2           100      0         0   0.000000  nekase
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #95
+  transakcijos:  100
+  prev_hash:     0003dbba8e9b3f7563a9693c00295b7ca2412a77118129d26a059a149bc41848
+  tx_root:       4130f945ed1993d8277edfcf1072b6380eb465280b376724f9774a4818a7975f
+  hash:          000705b1367e3f1ddb7416f9175563998f4c454a2536875ec43dc640e11127d4
+  difficulty:    3
+  nonce:         181
+  bandymai:      182
+  kasimo laikas: 0.000052 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000555  nerado
+                  2           100      1      2000   0.000556  nerado
+                  3           100      1       182   0.000052  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #96
+  transakcijos:  100
+  prev_hash:     000705b1367e3f1ddb7416f9175563998f4c454a2536875ec43dc640e11127d4
+  tx_root:       8cddd25b41f1629349031673a916a24eba2ad00fb97a1fd1071d0485b351ce87
+  hash:          0001cb8b42c8acb8d4fc41951863fcef40f3818cc6abc23c5541a56bf57b011b
+  difficulty:    3
+  nonce:         1037
+  bandymai:      1038
+  kasimo laikas: 0.000303 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000569  nerado
+                  2           100      1      2000   0.000590  nerado
+                  3           100      1      2000   0.000565  nerado
+                  4           100      1      2000   0.000554  nerado
+                  5           100      1      1038   0.000303  laimejo
+Blokas #97
+  transakcijos:  100
+  prev_hash:     0001cb8b42c8acb8d4fc41951863fcef40f3818cc6abc23c5541a56bf57b011b
+  tx_root:       3ed62f42e8971322c7e76e1a8db977245f1b76b23975c46b33de8c837ae93e07
+  hash:          000af8cfe982298bec5fbd1fab1fc93217d35c9aa99fcec66f43cbc4415e8f08
+  difficulty:    3
+  nonce:         734
+  bandymai:      735
+  kasimo laikas: 0.000208 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000563  nerado
+                  2           100      1      2000   0.000602  nerado
+                  3           100      1      2000   0.000611  nerado
+                  4           100      1      2000   0.000567  nerado
+                  5           100      1       735   0.000208  laimejo
+Blokas #98
+  transakcijos:  100
+  prev_hash:     000af8cfe982298bec5fbd1fab1fc93217d35c9aa99fcec66f43cbc4415e8f08
+  tx_root:       1185dd1f56ee6b08536bd4d4d30bdafea385963f9edb2c757b37c04876e845bf
+  hash:          000dd5ca1343f0fc9b93b86fc86706832957726d3d9a0370f878bcc1103b6f11
+  difficulty:    3
+  nonce:         962
+  bandymai:      963
+  kasimo laikas: 0.000279 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.000548  nerado
+                  2           100      1      2000   0.000539  nerado
+                  3           100      1       963   0.000279  laimejo
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #99
+  transakcijos:  100
+  prev_hash:     000dd5ca1343f0fc9b93b86fc86706832957726d3d9a0370f878bcc1103b6f11
+  tx_root:       ae918bad393b1d868153d1857818e3e546a468678a4f06f71703bbe22aaf45b2
+  hash:          000a90c5168dc885bcd65ab7f7a9d0e819ceb7d963729b2a2d3ea3bad8cf8dbc
+  difficulty:    3
+  nonce:         3587
+  bandymai:      3588
+  kasimo laikas: 0.000983 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      2      3588   0.000983  laimejo
+                  2           100      1      2000   0.000567  nerado
+                  3           100      1      2000   0.000556  nerado
+                  4           100      1      2000   0.000563  nerado
+                  5           100      1      2000   0.000556  nerado
+Blokas #100
+  transakcijos:  99
+  prev_hash:     000a90c5168dc885bcd65ab7f7a9d0e819ceb7d963729b2a2d3ea3bad8cf8dbc
+  tx_root:       d3cb71776a73ac176e89f0e616e23ab58afecc0ba6dd19d8d128f66664797426
+  hash:          000df5652989778a44f24b2ff303158779079dbdacf501e27764198929b0d64d
+  difficulty:    3
+  nonce:         82
+  bandymai:      83
+  kasimo laikas: 0.000024 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1            99      1      2000   0.000547  nerado
+                  2            99      1        83   0.000024  laimejo
+                  3            99      0         0   0.000000  nekase
+                  4            99      0         0   0.000000  nekase
+                  5            99      0         0   0.000000  nekase
+
+Suvestine
+  vartotojai:             1000
+  transakcijos:           10000
+  priimti blokai:         100
+  itrauktos transakcijos: 9999
+  atmestos pries fonda:   0
+  atmestos atrenkant:     1
+  likusios transakcijos:  0
+  pradine lesu suma:      498753171
+  galutine lesu suma:     498753171
+  bendras laikas:         0.513267 s
+
+Kandidatai
+  kasimo budas:            nuoseklus, viena gija
+  kandidatu vienam blokui: 5
+  pradinis biudzetas:      2000 bandymu per eile
+  visu kandidatu bandymai: 372639
+  visu kandidatu laikas:   0.118776 s (giju darbo laiko suma)
+  kasimo trukme:           0.118809 s (pagal laikrodi)
+  biudzetas dvigubintas:   7 k.
+  laimeti blokai:          nr 1: 44, nr 2: 30, nr 3: 14, nr 4: 3, nr 5: 9
+
+Atmesta 5dc4e0c85d3d449609dfcbd08e7eec2f5e6e9dc589b02aa8bad1ae81d2520614 (suma 92632): siuntejui nepakako lesu

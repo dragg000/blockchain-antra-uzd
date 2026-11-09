@@ -1,0 +1,32 @@
+Matavimo salygos: 5 kandidatai, 10 loginiai branduoliai, kartojimu 7
+
+1. Fiksuotas bandymu skaicius
+  kartai:       7
+  nuosekliai:   vidurkis 0.358236 s, nuokrypis 0.004332 s
+  lygiagreciai: vidurkis 0.077281 s, nuokrypis 0.001651 s
+  santykis:     4.64 karto
+  pastaba:      5 kandidatai po 200000 bandymu, is viso nuosekliai 1000000, lygiagreciai 1000000
+2a. Visas paleidimas, sudetingumas 3
+  kartai:       7
+  nuosekliai:   vidurkis 0.457157 s, nuokrypis 0.033055 s
+  lygiagreciai: vidurkis 0.410015 s, nuokrypis 0.014728 s
+  santykis:     1.11 karto
+  pastaba:      paskutinio bloko hash sutampa: 000df5652989778a44f24b2ff303158779079dbdacf501e27764198929b0d64d
+2b. Tik kandidatu kasimas tame paciame paleidime
+  kartai:       7
+  nuosekliai:   vidurkis 0.108592 s, nuokrypis 0.006915 s
+  lygiagreciai: vidurkis 0.064329 s, nuokrypis 0.002702 s
+  santykis:     1.69 karto
+  pastaba:      bandymu nuosekliai 372639, lygiagreciai 593055 (sustabdyti kandidatai spejo atlikti dali darbo)
+3a. Visas paleidimas, sudetingumas 4
+  kartai:       7
+  nuosekliai:   vidurkis 2.674339 s, nuokrypis 0.201843 s
+  lygiagreciai: vidurkis 1.231809 s, nuokrypis 0.059963 s
+  santykis:     2.17 karto
+  pastaba:      paskutinio bloko hash sutampa: 000034b94ad49317ffcbf9729e8a66731beb2bd8f4b13f57d8b540195af12f00
+3b. Tik kandidatu kasimas tame paciame paleidime
+  kartai:       7
+  nuosekliai:   vidurkis 2.285987 s, nuokrypis 0.169576 s
+  lygiagreciai: vidurkis 0.803102 s, nuokrypis 0.036861 s
+  santykis:     2.85 karto
+  pastaba:      bandymu nuosekliai 7414380, lygiagreciai 8603997 (sustabdyti kandidatai spejo atlikti dali darbo)
