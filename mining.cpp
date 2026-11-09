@@ -39,6 +39,15 @@ Selection select_transaction(const std::vector<Transaction> &pool, const Balance
     return selection;
 }
 
+std::vector<Selection> build_candidates(size_t candidate_count, const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng,const std::set<Hash> &known_ids)
+{
+    std::vector<Selection> candidate_selections;
+    for(size_t i = 0; i < candidate_count; i++)
+        candidate_selections.push_back(select_transaction(pool, balances, rng, known_ids));
+
+    return candidate_selections;
+}
+
 void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transaction> &to_remove)
 {
     std::set<Hash> ids;

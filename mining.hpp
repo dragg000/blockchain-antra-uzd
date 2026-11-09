@@ -20,6 +20,8 @@ struct MiningResult
 
 Selection select_transaction(const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng, const std::set<Hash> &known_ids);
 
+std::vector<Selection> build_candidates(size_t candidate_count, const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng,const std::set<Hash> &known_ids);
+
 void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transaction> &to_remove);
 
 MiningResult run_mining(std::vector<Transaction> &pool, BalanceState &balances, Blockchain &chain,
