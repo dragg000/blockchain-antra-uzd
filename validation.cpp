@@ -56,17 +56,16 @@ std::string validate_transaction(const BalanceState &balance,
     return "";
 }
 
-std::string add_transaction_to_pool(std::vector<Transaction> &pool, const Transaction &transaction,
+std::string add_transaction_to_pool(std::vector<Transaction> &pool, std::set<Hash> &pool_ids,
+                                    const Transaction &transaction,
                                     const BalanceState &balances, const std::set<Hash> &chain_ids)
 {
-    std::set<Hash> known_ids = chain_ids;
+    std::string error = validate_transaction(balances, transaction, chain_ids);
 
-    for (const Transaction &tx : pool)
+    if (error.empty() && pool_ids.count(transaction.get_transaction_id()) > 0)
     {
-        known_ids.insert(tx.get_transaction_id());
+        error = "pasikartojantis ID";
     }
-
-    std::string error = validate_transaction(balances, transaction, known_ids);
 
     if (!error.empty())
     {
@@ -74,5 +73,6 @@ std::string add_transaction_to_pool(std::vector<Transaction> &pool, const Transa
     }
 
     pool.push_back(transaction);
+    pool_ids.insert(transaction.get_transaction_id());
     return "";
 }

@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     std::vector<Transaction> generated = generate_transactions(transaction_seed, users, transaction_count);
     std::vector<Transaction> pool;
     std::vector<RefusedTransaction> refused;
-    std::set<Hash> known_ids;
+    std::set<Hash> pool_ids;
     std::mt19937_64 rng(selection_seed);
 
     BalanceState balances(users);
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
     for (const Transaction &transaction : generated)
     {
-        std::string error = add_transaction_to_pool(pool, transaction, balances, bakugan.get_transaction_ids());
+        std::string error = add_transaction_to_pool(pool, pool_ids, transaction, balances, bakugan.get_transaction_ids());
         if (!error.empty())
         {
             refused.push_back({transaction, error});

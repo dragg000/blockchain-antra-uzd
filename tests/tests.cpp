@@ -6,6 +6,7 @@
 #include "user.hpp"
 #include "validation.hpp"
 #include <iostream>
+#include <limits>
 #include <random>
 #include <set>
 #include <string>
@@ -25,6 +26,12 @@ static int checks = 0;
         }                                                                         \
     } while (false)
 
+// Validation needs 64-character hex keys, so test users get hashed names as keys.
+static Key key(const std::string &name)
+{
+    return hashTextUtf8(name);
+}
+
 static Transaction make_transaction(const Key &sender, const Key &receiver, Bakugan amount, uint64_t sequence)
 {
     Transaction transaction(sender, receiver, amount, "", sequence);
@@ -34,7 +41,7 @@ static Transaction make_transaction(const Key &sender, const Key &receiver, Baku
 
 static std::vector<User> small_users()
 {
-    return {User("a", "A", 100), User("b", "B", 50), User("c", "C", 0)};
+    return {User("a", key("A"), 100), User("b", key("B"), 50), User("c", key("C"), 0)};
 }
 
 static void test_serialization()
@@ -63,10 +70,10 @@ static void test_same_input_same_transaction_hashes()
 static void test_fixed_header_same_block_hash()
 {
     std::cout << "Fiksuota antraste duoda ta pati bloko hash\n";
-    std::vector<Transaction> transactions = {make_transaction("A", "B", 1, 0)};
-    Block first(Block_h(std::string(64, '0'), "", 1000, 1, 2, 7), transactions);
-    Block second(Block_h(std::string(64, '0'), "", 1000, 1, 2, 7), transactions);
-    Block other_nonce(Block_h(std::string(64, '0'), "", 1000, 1, 2, 8), transactions);
+    std::vector<Transaction> transactions = {make_transaction(key("A"), key("B"), 1, 0)};
+    Block first(Block_h(std::string(64, '0'), "", 1000, 2, 2, 7), transactions);
+    Block second(Block_h(std::string(64, '0'), "", 1000, 2, 2, 7), transactions);
+    Block other_nonce(Block_h(std::string(64, '0'), "", 1000, 2, 2, 8), transactions);
 
     CHECK(first.calculateHash() == second.calculateHash());
     CHECK(first.calculateHash() != other_nonce.calculateHash());
@@ -86,7 +93,8 @@ static void test_hand_checked_case()
     std::cout << "Mazas rankomis patikrintas atvejis\n";
     // A 100 - 30 = 70, B 50 + 30 - 20 = 60, C 0 + 20 = 20. Suma 150.
     std::vector<User> users = small_users();
-    std::vector<Transaction> pool = {make_transaction("A", "B", 30, 0), make_transaction("B", "C", 20, 1)};
+    std::vector<Transaction> pool = {make_transaction(key("A"), key("B"), 30, 0),
+                                     make_transaction(key("B"), key("C"), 20, 1)};
     BalanceState balances(users);
     Blockchain chain(1);
     std::mt19937_64 rng(1);
@@ -97,9 +105,9 @@ static void test_hand_checked_case()
     CHECK(result.included == 2);
     CHECK(result.rejected.empty());
     CHECK(pool.empty());
-    CHECK(balances.get_balance("A") == 70);
-    CHECK(balances.get_balance("B") == 60);
-    CHECK(balances.get_balance("C") == 20);
+    CHECK(balances.get_balance(key("A")) == 70);
+    CHECK(balances.get_balance(key("B")) == 60);
+    CHECK(balances.get_balance(key("C")) == 20);
     CHECK(balances.sum() == 150);
 }
 
@@ -107,41 +115,62 @@ static void test_cannot_overspend()
 {
     std::cout << "Negalima isleisti daugiau, nei turima\n";
     std::vector<User> users = small_users();
+    const Key A = key("A");
+    const Key B = key("B");
+    const Key C = key("C");
+    const Key Z = key("Z");
 
     BalanceState single(users);
-    CHECK(!single.apply(make_transaction("A", "B", 101, 0)));
-    CHECK(single.get_balance("A") == 100);
-    CHECK(single.get_balance("B") == 50);
-    CHECK(single.apply(make_transaction("A", "B", 100, 1)));
-    CHECK(single.get_balance("A") == 0);
-    CHECK(!single.apply(make_transaction("Z", "B", 1, 2)));
-    CHECK(!single.apply(make_transaction("A", "Z", 0, 3)));
+    CHECK(!single.apply(make_transaction(A, B, 101, 0)));
+    CHECK(single.get_balance(A) == 100);
+    CHECK(single.get_balance(B) == 50);
+    CHECK(single.apply(make_transaction(A, B, 100, 1)));
+    CHECK(single.get_balance(A) == 0);
+    CHECK(!single.apply(make_transaction(Z, B, 1, 2)));
+    CHECK(!single.apply(make_transaction(A, Z, 0, 3)));
+    CHECK(!single.apply(make_transaction(B, B, 10, 4)));
+    CHECK(!single.apply(make_transaction(B, C, 0, 5)));
     CHECK(single.sum() == 150);
 
     // Uzduoties pavyzdys: A turi 100, T1 moka 70, T2 moka 60, tilpti gali tik viena.
-    std::vector<Transaction> pool = {make_transaction("A", "B", 70, 0), make_transaction("A", "C", 60, 1)};
+    std::vector<Transaction> pool = {make_transaction(A, B, 70, 0), make_transaction(A, C, 60, 1)};
     BalanceState confirmed(users);
+    const std::set<Hash> no_ids;
     bool exactly_one_every_time = true;
     bool balances_unchanged = true;
     for (uint64_t seed = 0; seed < 50; seed++)
     {
         std::mt19937_64 rng(seed);
-        Selection selection = select_transaction(pool, confirmed, rng);
+        Selection selection = select_transaction(pool, confirmed, rng, no_ids);
         exactly_one_every_time = exactly_one_every_time && selection.selected.size() == 1 && selection.rejected.size() == 1;
-        balances_unchanged = balances_unchanged && confirmed.get_balance("A") == 100 && pool.size() == 2;
+        balances_unchanged = balances_unchanged && confirmed.get_balance(A) == 100 && pool.size() == 2;
     }
     CHECK(exactly_one_every_time);
     CHECK(balances_unchanged);
 }
 
+static void test_overflow_refused()
+{
+    std::cout << "Gavejo balanso perpildymas atmetamas\n";
+    const Bakugan max = std::numeric_limits<Bakugan>::max();
+    std::vector<User> users = {User("a", key("A"), 10), User("b", key("B"), max - 5)};
+    BalanceState balances(users);
+
+    CHECK(!balances.apply(make_transaction(key("A"), key("B"), 10, 0)));
+    CHECK(balances.get_balance(key("A")) == 10);
+    CHECK(balances.get_balance(key("B")) == max - 5);
+    CHECK(balances.apply(make_transaction(key("A"), key("B"), 5, 1)));
+    CHECK(balances.get_balance(key("B")) == max);
+}
+
 static void test_last_partial_block()
 {
     std::cout << "Paskutinis nepilnas blokas\n";
-    std::vector<User> users = {User("a", "A", 1000000), User("b", "B", 0)};
+    std::vector<User> users = {User("a", key("A"), 1000000), User("b", key("B"), 0)};
     std::vector<Transaction> pool;
     for (uint64_t i = 0; i < 250; i++)
     {
-        pool.push_back(make_transaction("A", "B", 1, i));
+        pool.push_back(make_transaction(key("A"), key("B"), 1, i));
     }
     BalanceState balances(users);
     Blockchain chain(1);
@@ -154,14 +183,15 @@ static void test_last_partial_block()
     CHECK(chain.get_block(2).get_transactions().size() == 100);
     CHECK(chain.get_block(3).get_transactions().size() == 50);
     CHECK(result.included == 250);
-    CHECK(balances.get_balance("B") == 250);
+    CHECK(balances.get_balance(key("B")) == 250);
 }
 
 static void test_loop_stops_when_nothing_fits()
 {
     std::cout << "Ciklas sustoja, kai nieko negalima itraukti\n";
     std::vector<User> users = small_users();
-    std::vector<Transaction> pool = {make_transaction("A", "B", 1000, 0), make_transaction("Z", "B", 1, 1)};
+    std::vector<Transaction> pool = {make_transaction(key("A"), key("B"), 1000, 0),
+                                     make_transaction(key("Z"), key("B"), 1, 1)};
     BalanceState balances(users);
     Blockchain chain(1);
     std::mt19937_64 rng(1);
@@ -173,6 +203,51 @@ static void test_loop_stops_when_nothing_fits()
     CHECK(result.rejected.size() == 2);
     CHECK(pool.empty());
     CHECK(balances.sum() == 150);
+}
+
+static void test_selection_refuses_invalid()
+{
+    std::cout << "Atranka atmeta netinkamas ir jau patvirtintas transakcijas\n";
+    std::vector<User> users = small_users();
+    BalanceState balances(users);
+
+    const Transaction valid = make_transaction(key("A"), key("B"), 10, 0);
+    const Transaction confirmed = make_transaction(key("A"), key("B"), 20, 1);
+    Transaction wrong_id = make_transaction(key("A"), key("B"), 30, 2);
+    wrong_id.set_amount(31);
+
+    const std::set<Hash> chain_ids = {confirmed.get_transaction_id()};
+    std::vector<Transaction> pool = {valid, confirmed, wrong_id};
+    std::mt19937_64 rng(1);
+
+    Selection selection = select_transaction(pool, balances, rng, chain_ids);
+
+    CHECK(selection.selected.size() == 1);
+    CHECK(selection.selected.size() == 1 && selection.selected[0].get_transaction_id() == valid.get_transaction_id());
+    CHECK(selection.rejected.size() == 2);
+    CHECK(balances.get_balance(key("A")) == 100);
+}
+
+static void test_add_to_pool()
+{
+    std::cout << "Transakciju pridejimas i fonda\n";
+    std::vector<User> users = small_users();
+    BalanceState balances(users);
+    std::vector<Transaction> pool;
+    std::set<Hash> pool_ids;
+
+    const Transaction first = make_transaction(key("A"), key("B"), 10, 0);
+    const Transaction on_chain = make_transaction(key("A"), key("B"), 20, 1);
+    const std::set<Hash> chain_ids = {on_chain.get_transaction_id()};
+
+    CHECK(add_transaction_to_pool(pool, pool_ids, first, balances, chain_ids) == "");
+    CHECK(pool.size() == 1);
+    CHECK(add_transaction_to_pool(pool, pool_ids, first, balances, chain_ids) == "pasikartojantis ID");
+    CHECK(add_transaction_to_pool(pool, pool_ids, on_chain, balances, chain_ids) == "pasikartojantis ID");
+    CHECK(add_transaction_to_pool(pool, pool_ids, make_transaction(key("A"), key("Z"), 5, 2), balances, chain_ids) ==
+          "nezinomas dalyvis");
+    CHECK(pool.size() == 1);
+    CHECK(pool_ids.size() == 1);
 }
 
 static void test_full_run_invariants()
@@ -216,6 +291,7 @@ static void test_full_run_invariants()
     }
     CHECK(on_chain == result.included);
     CHECK(ids.size() == on_chain);
+    CHECK(chain.get_transaction_ids() == ids);
     CHECK(links_ok);
     CHECK(pow_ok);
 }
@@ -239,9 +315,13 @@ static void test_same_input_same_chain()
 
 static void test_bad_blocks_are_refused()
 {
-    std::cout << "Netinkami blokai atmetami\n";
+    std::cout << "Netinkami blokai atmetami, busena nesikeicia\n";
+    const Key A = key("A");
+    const Key B = key("B");
+    std::vector<User> users = small_users();
+    BalanceState balances(users);
     Blockchain chain(3);
-    std::vector<Transaction> transactions = {make_transaction("A", "B", 1, 0)};
+    std::vector<Transaction> transactions = {make_transaction(A, B, 1, 0)};
     uint64_t attempts = 0;
     double seconds = 0.0;
     Block mined = chain.minePendingTransactions(transactions, attempts, seconds);
@@ -249,28 +329,58 @@ static void test_bad_blocks_are_refused()
     CHECK(mined.hasValidProofOfWork());
 
     // Tas pats nonce, bet pakeistas turinys: PoW nebetinka.
-    std::vector<Transaction> changed = {make_transaction("A", "B", 2, 0)};
+    std::vector<Transaction> changed = {make_transaction(A, B, 2, 0)};
     Block changed_contents(header, changed);
     CHECK(!changed_contents.hasValidProofOfWork());
-    CHECK(!chain.add_block(changed_contents));
+    CHECK(!chain.add_block(changed_contents, balances));
 
     // Neteisinga nuoroda i ankstesni bloka.
     Block wrong_prev(Block_h(std::string(64, 'f'), "", header.get_timestamp(), header.get_version(),
                              header.get_difficulty(), 0),
                      transactions);
     wrong_prev.mine(attempts, seconds);
-    CHECK(!chain.add_block(wrong_prev));
+    CHECK(!chain.add_block(wrong_prev, balances));
 
     // Neiskastas blokas.
     Block_h unmined_header(header.get_prev_hash(), "", header.get_timestamp(), header.get_version(),
                            header.get_difficulty(), header.get_nonce() + 1);
     Block unmined(unmined_header, transactions);
     CHECK(!unmined.hasValidProofOfWork());
-    CHECK(!chain.add_block(unmined));
+    CHECK(!chain.add_block(unmined, balances));
+
+    // Kandidatas negali pats sumazinti sudetingumo.
+    Block easier(Block_h(header.get_prev_hash(), "", header.get_timestamp(), header.get_version(), 1, 0),
+                 transactions);
+    easier.mine(attempts, seconds);
+    CHECK(easier.hasValidProofOfWork());
+    CHECK(!chain.add_block(easier, balances));
+
+    // Nepalaikoma formato versija.
+    Block old_version(Block_h(header.get_prev_hash(), "", header.get_timestamp(), 1, header.get_difficulty(), 0),
+                      transactions);
+    old_version.mine(attempts, seconds);
+    CHECK(!chain.add_block(old_version, balances));
+
+    // Iskastas blokas, kuriame siuntejas isleidzia daugiau, nei turi.
+    std::vector<Transaction> overspend = {make_transaction(A, B, 1000, 1)};
+    Block too_much = chain.minePendingTransactions(overspend, attempts, seconds);
+    CHECK(!chain.add_block(too_much, balances));
 
     CHECK(chain.height() == 0);
-    CHECK(chain.add_block(mined));
+    CHECK(balances.get_balance(A) == 100);
+    CHECK(balances.get_balance(B) == 50);
+    CHECK(chain.get_transaction_ids().empty());
+
+    CHECK(chain.add_block(mined, balances));
     CHECK(chain.height() == 1);
+    CHECK(balances.get_balance(A) == 99);
+    CHECK(balances.get_balance(B) == 51);
+
+    // Jau patvirtinto mokejimo pakartojimas naujame bloke.
+    Block replay = chain.minePendingTransactions(transactions, attempts, seconds);
+    CHECK(!chain.add_block(replay, balances));
+    CHECK(chain.height() == 1);
+    CHECK(balances.get_balance(A) == 99);
 }
 
 static void test_validation()
@@ -336,23 +446,25 @@ static void test_validation()
     MiningResult result = run_mining(pool, confirmed, chain, rng, false);
     CHECK(result.included == 1);
     CHECK(chain.height() == 1);
-    CHECK(validate_transaction(confirmed, valid, known_ids) == "pasikartojantis ID");
+    CHECK(validate_transaction(confirmed, valid, chain.get_transaction_ids()) == "pasikartojantis ID");
 
     // Visos sugeneruotos transakcijos praeina tikrinima.
     std::vector<User> generated_users = generate_users(1);
     std::vector<Transaction> generated = generate_transactions(2, generated_users, 2000);
     BalanceState generated_balances(generated_users);
+    std::vector<Transaction> generated_pool;
     std::set<Hash> generated_ids;
+    const std::set<Hash> no_chain_ids;
     size_t passed = 0;
     for (const Transaction &transaction : generated)
     {
-        if (validate_transaction(generated_balances, transaction, generated_ids).empty())
+        if (add_transaction_to_pool(generated_pool, generated_ids, transaction, generated_balances, no_chain_ids).empty())
         {
-            generated_ids.insert(transaction.get_transaction_id());
             passed++;
         }
     }
     CHECK(passed == generated.size());
+    CHECK(generated_pool.size() == generated.size());
 }
 
 int main()
@@ -364,8 +476,11 @@ int main()
     test_genesis();
     test_hand_checked_case();
     test_cannot_overspend();
+    test_overflow_refused();
     test_last_partial_block();
     test_loop_stops_when_nothing_fits();
+    test_selection_refuses_invalid();
+    test_add_to_pool();
     test_full_run_invariants();
     test_same_input_same_chain();
     test_bad_blocks_are_refused();

@@ -41,11 +41,6 @@ uint32_t Blockchain::get_difficulty() const
     return difficulty;
 }
 
-const std::set<Hash> &Blockchain::get_transaction_ids() const
-{
-    return known_transaction_ids;
-}
-
 bool Blockchain::add_block(const Block &block, BalanceState &balances)
 {
 
