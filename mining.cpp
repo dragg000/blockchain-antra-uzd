@@ -5,6 +5,7 @@
 #include <iostream>
 #include <set>
 #include <stdexcept>
+#include <unordered_set>
 #include <utility>
 
 Selection select_transaction(const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng, const std::set<Hash> &known_ids)
@@ -98,7 +99,11 @@ size_t mine_candidates(std::vector<Candidate> &candidates, uint64_t start_budget
 
 void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transaction> &to_remove)
 {
-    std::set<Hash> ids;
+    if (to_remove.empty())
+        return;
+
+    std::unordered_set<Hash> ids;
+    ids.reserve(to_remove.size() * 2);
     for (const Transaction &transaction : to_remove)
     {
         ids.insert(transaction.get_transaction_id());
