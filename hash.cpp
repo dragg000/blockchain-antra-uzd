@@ -1,3 +1,5 @@
+#include "hash.hpp"
+
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -101,4 +103,116 @@ std::string bytesToHex(const std::vector<u8>& bytes) {
 
 std::string hashTextUtf8(const std::string& text) {
     return bytesToHex(hashData(toBytes(text)));
+}
+
+// ---------------------------------------------------------------------------
+// v0.3: srautine sasaja. Viskas, kas auksciau, yra nepakeistas 1 uzduoties kodas.
+// Zemiau esantis kodas naudoja ta pacia mixBlock funkcija ir ta pati IV, todel
+// duoda tuos pacius rezultatus. Tai tikrina tests/tests_v03.cpp.
+// ---------------------------------------------------------------------------
+
+// Vienas 64 baitu blokas: tie patys veiksmai kaip hashData ciklo viduje.
+static void absorbBlock(std::array<u32, 8>& state, const u8* block) {
+    std::array<u32, 16> words{};
+    for (int i = 0; i < 16; ++i) {
+        const u8* p = block + i * 4;
+        words[i] = (u32(p[0]) | (u32(p[1]) << 8) | (u32(p[2]) << 16) | (u32(p[3]) << 24));
+    }
+
+    std::array<u32, 8> mixed = mixBlock(state, words);
+    for (int i = 0; i < 8; ++i) {
+        state[i] = mixed[i] ^ rotl32(state[(i + 4) % 8] + words[(i * 3 + 1) % 16] + 0xA5A5A5A5u, 17 + i);
+    }
+}
+
+HashStream::HashStream() : state(IV), buffer{}, buffered(0), total_bytes(0) {}
+
+void HashStream::update(const char* data, std::size_t size) {
+    total_bytes += size;
+    const u8* bytes = reinterpret_cast<const u8*>(data);
+
+    // Pirma uzpildomas anksciau pradetas blokas.
+    if (buffered > 0) {
+        while (size > 0 && buffered < 64) {
+            buffer[buffered++] = *bytes++;
+            --size;
+        }
+        if (buffered < 64) {
+            return;
+        }
+        absorbBlock(state, buffer.data());
+        buffered = 0;
+    }
+
+    while (size >= 64) {
+        absorbBlock(state, bytes);
+        bytes += 64;
+        size -= 64;
+    }
+
+    while (size > 0) {
+        buffer[buffered++] = *bytes++;
+        --size;
+    }
+}
+
+HashStream::Digest HashStream::digest() const {
+    // Dirbama su kopijomis, kad objekta butu galima naudoti toliau.
+    std::array<u32, 8> final_state = state;
+
+    // Uzpildymas kaip padBytes: 0x80, nuliai iki 56 (mod 64), tada 8 baitai ilgio bitais.
+    std::array<u8, 128> tail{};
+    std::size_t length = buffered;
+    for (std::size_t i = 0; i < buffered; ++i) {
+        tail[i] = buffer[i];
+    }
+    tail[length++] = 0x80u;
+    const std::size_t padded = (length <= 56) ? 64 : 128;
+    const u64 bits = total_bytes * 8ULL;
+    for (int i = 0; i < 8; ++i) {
+        tail[padded - 8 + i] = static_cast<u8>((bits >> (56 - 8 * i)) & 0xFFu);
+    }
+
+    absorbBlock(final_state, tail.data());
+    if (padded == 128) {
+        absorbBlock(final_state, tail.data() + 64);
+    }
+
+    Digest out{};
+    for (int i = 0; i < 8; ++i) {
+        const u32 word = final_state[i];
+        out[i * 4 + 0] = static_cast<u8>(word & 0xFFu);
+        out[i * 4 + 1] = static_cast<u8>((word >> 8) & 0xFFu);
+        out[i * 4 + 2] = static_cast<u8>((word >> 16) & 0xFFu);
+        out[i * 4 + 3] = static_cast<u8>((word >> 24) & 0xFFu);
+    }
+    return out;
+}
+
+std::string digest_to_hex(const HashStream::Digest& digest) {
+    static const char digits[] = "0123456789abcdef";
+    std::string hex(64, '0');
+    for (std::size_t i = 0; i < digest.size(); ++i) {
+        hex[i * 2] = digits[digest[i] >> 4];
+        hex[i * 2 + 1] = digits[digest[i] & 0x0Fu];
+    }
+    return hex;
+}
+
+std::string HashStream::hex() const {
+    return digest_to_hex(digest());
+}
+
+bool has_leading_zero_nibbles(const HashStream::Digest& digest, std::uint32_t count) {
+    if (count > 64) {
+        return false;
+    }
+    for (std::uint32_t i = 0; i < count; ++i) {
+        const u8 byte = digest[i / 2];
+        const u8 nibble = (i % 2 == 0) ? static_cast<u8>(byte >> 4) : static_cast<u8>(byte & 0x0Fu);
+        if (nibble != 0) {
+            return false;
+        }
+    }
+    return true;
 }

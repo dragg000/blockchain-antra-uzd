@@ -81,6 +81,107 @@ static void test_budget_is_exact()
     CHECK(reference.get_header().get_nonce() == valid_nonce);
 }
 
+static void test_hash_stream_matches_hash()
+{
+    std::cout << "Srautine maisa sutampa su hashTextUtf8\n";
+
+    // Zinoma reiksme is 1 uzduoties README.
+    CHECK(hashTextUtf8("hello world") == "dcff59e3b321da126e0bc4d63b61bc3f74ee1ca81bd4c3607915403067988abe");
+    HashStream known;
+    known.update("hello world");
+    CHECK(known.hex() == "dcff59e3b321da126e0bc4d63b61bc3f74ee1ca81bd4c3607915403067988abe");
+
+    // Visi ilgiai nuo 0 iki 300 baitu: apima uzpildymo ribas ties 55, 56, 63, 64, 119, 120, 127, 128.
+    std::mt19937_64 rng(2026);
+    bool all_lengths = true;
+    bool byte_by_byte = true;
+    for (size_t length = 0; length <= 300; length++)
+    {
+        std::string text(length, '\0');
+        for (char &c : text)
+        {
+            c = static_cast<char>(rng() % 256);
+        }
+        const Hash expected = hashTextUtf8(text);
+
+        HashStream whole;
+        whole.update(text);
+        all_lengths = all_lengths && whole.hex() == expected;
+
+        HashStream single;
+        for (char c : text)
+        {
+            single.update(&c, 1);
+        }
+        byte_by_byte = byte_by_byte && single.hex() == expected;
+    }
+    CHECK(all_lengths);
+    CHECK(byte_by_byte);
+
+    // Kiekviena dalijimo vieta 200 baitu tekste, taip pat dalijimas i tris dalis.
+    std::string text(200, '\0');
+    for (char &c : text)
+    {
+        c = static_cast<char>(rng() % 256);
+    }
+    const Hash expected = hashTextUtf8(text);
+    bool every_split = true;
+    for (size_t split = 0; split <= text.size(); split++)
+    {
+        HashStream stream;
+        stream.update(text.data(), split);
+        stream.update(text.data() + split, text.size() - split);
+        every_split = every_split && stream.hex() == expected;
+
+        HashStream three;
+        const size_t half = split / 2;
+        three.update(text.data(), half);
+        three.update(text.data() + half, split - half);
+        three.update(text.data() + split, text.size() - split);
+        every_split = every_split && three.hex() == expected;
+    }
+    CHECK(every_split);
+
+    // digest() busenos nekeicia: ta pati tarpine busena tinka skirtingoms pabaigoms.
+    HashStream prefix;
+    prefix.update("bendra pradzia, ilgesne nei vienas 64 baitu blokas, kad dalis jau butu sumaisyta|");
+    const std::string before = prefix.hex();
+    HashStream first = prefix;
+    first.update("1|3");
+    HashStream second = prefix;
+    second.update("2|3");
+    CHECK(prefix.hex() == before);
+    CHECK(first.hex() == hashTextUtf8("bendra pradzia, ilgesne nei vienas 64 baitu blokas, kad dalis jau butu sumaisyta|1|3"));
+    CHECK(second.hex() == hashTextUtf8("bendra pradzia, ilgesne nei vienas 64 baitu blokas, kad dalis jau butu sumaisyta|2|3"));
+    CHECK(first.hex() != second.hex());
+
+    // Tuscia ivestis.
+    CHECK(HashStream().hex() == hashTextUtf8(""));
+
+    // Pradiniu nuliu tikrinimas baitais atitinka hex teksto tikrinima.
+    bool zero_check_matches = true;
+    for (uint64_t i = 0; i < 20000; i++)
+    {
+        HashStream stream;
+        stream.update(std::to_string(i));
+        const std::string hex = stream.hex();
+        for (uint32_t count = 0; count <= 4; count++)
+        {
+            const bool by_text = hex.substr(0, count) == std::string(count, '0');
+            zero_check_matches = zero_check_matches && has_leading_zero_nibbles(stream.digest(), count) == by_text;
+        }
+    }
+    CHECK(zero_check_matches);
+    HashStream::Digest zeros{};
+    CHECK(has_leading_zero_nibbles(zeros, 64));
+    CHECK(!has_leading_zero_nibbles(zeros, 65));
+    HashStream::Digest half_byte{};
+    half_byte[0] = 0x0F;
+    CHECK(has_leading_zero_nibbles(half_byte, 1));
+    CHECK(!has_leading_zero_nibbles(half_byte, 2));
+    CHECK(digest_to_hex(half_byte) == "0f" + std::string(62, '0'));
+}
+
 struct RunResult
 {
     Hash tip;
@@ -147,6 +248,7 @@ static void test_same_chain_as_v02()
 int main()
 {
     test_budget_is_exact();
+    test_hash_stream_matches_hash();
     test_same_chain_as_v02();
 
     std::cout << "\nv0.3 patikros: " << checks << ", nepavyko: " << failures << "\n";
