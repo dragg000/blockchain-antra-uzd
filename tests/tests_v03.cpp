@@ -342,6 +342,217 @@ static void test_merkle_module()
     CHECK(blocks_refused);
 }
 
+static std::vector<User> small_users()
+{
+    return {User("a", key("A"), 100), User("b", key("B"), 50), User("c", key("C"), 0)};
+}
+
+// Iskasa bloka ant grandines virsunes su nurodytais antrastes pakeitimais.
+static Block mined_block(const Blockchain &chain, const std::vector<Transaction> &transactions)
+{
+    uint64_t attempts = 0;
+    double seconds = 0.0;
+    return chain.minePendingTransactions(transactions, attempts, seconds);
+}
+
+static Block mined_with_header(const Block_h &header, const std::vector<Transaction> &transactions)
+{
+    uint64_t attempts = 0;
+    double seconds = 0.0;
+    Block block(header, transactions);
+    block.mine(attempts, seconds);
+    return block;
+}
+
+static void test_block_rejection_reasons()
+{
+    std::cout << "Bloko atmetimo priezastys\n";
+    const Key A = key("A");
+    const Key B = key("B");
+    const Key C = key("C");
+    std::vector<User> users = small_users();
+    BalanceState balances(users);
+    Blockchain chain(2);
+    const std::vector<Transaction> transactions = {make_transaction(A, B, 1, 0)};
+    const Block good = mined_block(chain, transactions);
+    const Block_h header = good.get_header();
+
+    CHECK(chain.check_block(good, balances) == "");
+
+    const Block wrong_prev = mined_with_header(
+        Block_h(std::string(64, 'f'), "", header.get_timestamp(), 2, 2, 0), transactions);
+    CHECK(chain.check_block(wrong_prev, balances) == "neteisingas prev_hash");
+
+    const Block old_version = mined_with_header(
+        Block_h(header.get_prev_hash(), "", header.get_timestamp(), 1, 2, 0), transactions);
+    CHECK(chain.check_block(old_version, balances) == "nepalaikoma versija");
+
+    const Block empty = mined_with_header(Block_h(header.get_prev_hash(), "", header.get_timestamp(), 2, 2, 0), {});
+    CHECK(chain.check_block(empty, balances) == "blokas be transakciju");
+
+    std::vector<Transaction> too_many;
+    for (uint64_t i = 0; i < max_block_transactions + 1; i++)
+    {
+        too_many.push_back(make_transaction(B, C, 1, 1000 + i));
+    }
+    CHECK(chain.check_block(mined_block(chain, too_many), balances) == "per daug transakciju");
+
+    const Block easier = mined_with_header(
+        Block_h(header.get_prev_hash(), "", header.get_timestamp(), 2, 1, 0), transactions);
+    CHECK(easier.hasValidProofOfWork());
+    CHECK(chain.check_block(easier, balances) == "neteisingas sudetingumas");
+
+    // Sunkesnis nei reikalaujama taip pat netinka: sudetinguma nustato grandine.
+    const Block harder = mined_with_header(
+        Block_h(header.get_prev_hash(), "", header.get_timestamp(), 2, 3, 0), transactions);
+    CHECK(chain.check_block(harder, balances) == "neteisingas sudetingumas");
+
+    // Neiskastas blokas: ieskomas nonce, kuris PoW netenkina.
+    uint64_t bad_nonce = 0;
+    while (Block(Block_h(header.get_prev_hash(), "", header.get_timestamp(), 2, 2, bad_nonce), transactions)
+               .hasValidProofOfWork())
+    {
+        bad_nonce++;
+    }
+    const Block unmined(Block_h(header.get_prev_hash(), "", header.get_timestamp(), 2, 2, bad_nonce), transactions);
+    CHECK(chain.check_block(unmined, balances) == "netinkamas PoW");
+
+    // Pakeistas turinys su ta pacia antraste: tx_root perskaiciuojama, todel PoW nebetinka.
+    const Block changed(header, {make_transaction(A, B, 2, 0)});
+    CHECK(chain.check_block(changed, balances) == "netinkamas PoW");
+
+    // Transakciju klaidos nurodo vieta bloke.
+    CHECK(chain.check_block(mined_block(chain, {make_transaction(A, B, 70, 1), make_transaction(A, C, 60, 2)}), balances) ==
+          "transakcija 2: siuntejui nepakako lesu");
+    CHECK(chain.check_block(mined_block(chain, {make_transaction(A, B, 1, 3), make_transaction(A, B, 1, 3)}), balances) ==
+          "transakcija 2: pasikartojantis ID");
+    CHECK(chain.check_block(mined_block(chain, {make_transaction(A, key("Z"), 1, 4)}), balances) ==
+          "transakcija 1: nezinomas dalyvis");
+    Transaction tampered = make_transaction(A, B, 1, 5);
+    tampered.set_amount(50);
+    CHECK(chain.check_block(mined_block(chain, {tampered}), balances) == "transakcija 1: neteisingas ID");
+    CHECK(chain.check_block(mined_block(chain, {make_transaction(A, A, 1, 6)}), balances) ==
+          "transakcija 1: siuntejas ir gavejas sutampa");
+
+    // check_block nieko nekeicia.
+    CHECK(chain.height() == 0);
+    CHECK(balances.get_balance(A) == 100 && balances.get_balance(B) == 50);
+    CHECK(chain.get_transaction_ids().empty());
+
+    // add_block grazina ta pacia priezasti ir atmetes nieko nekeicia.
+    std::string reason = "?";
+    CHECK(!chain.add_block(wrong_prev, balances, &reason));
+    CHECK(reason == "neteisingas prev_hash");
+    CHECK(chain.height() == 0 && balances.get_balance(A) == 100);
+
+    CHECK(chain.add_block(good, balances, &reason));
+    CHECK(reason == "");
+    CHECK(chain.height() == 1 && balances.get_balance(A) == 99 && balances.get_balance(B) == 51);
+
+    // Tas pats blokas dar karta: jis nebesiremia virsune.
+    CHECK(!chain.add_block(good, balances, &reason));
+    CHECK(reason == "neteisingas prev_hash");
+
+    // Jau patvirtintos transakcijos pakartojimas naujame bloke.
+    CHECK(chain.check_block(mined_block(chain, transactions), balances) == "transakcija 1: pasikartojantis ID");
+    CHECK(chain.height() == 1 && balances.get_balance(A) == 99);
+}
+
+static void test_selection_reasons()
+{
+    std::cout << "Atrankos atmetimo priezastys issaugomos\n";
+    const Key A = key("A");
+    const Key B = key("B");
+    const Key C = key("C");
+    std::vector<User> users = small_users();
+    BalanceState balances(users);
+    const std::set<Hash> no_ids;
+
+    // C neturi lesu, Z nezinomas, o A -> B telpa.
+    Transaction tampered = make_transaction(A, B, 5, 3);
+    tampered.set_amount(6);
+    std::vector<Transaction> pool = {make_transaction(C, A, 5, 0), make_transaction(A, key("Z"), 5, 1),
+                                     make_transaction(A, B, 5, 2), tampered};
+    std::mt19937_64 rng(1);
+    const Selection selection = select_transaction(pool, balances, rng, no_ids);
+    CHECK(selection.selected.size() == 1);
+    CHECK(selection.rejected.size() == 3);
+    CHECK(selection.reject_reasons.size() == selection.rejected.size());
+    bool reasons_match = selection.reject_reasons.size() == selection.rejected.size();
+    for (size_t i = 0; reasons_match && i < selection.rejected.size(); i++)
+    {
+        const Hash id = selection.rejected[i].get_transaction_id();
+        std::string expected = "neteisingas ID";
+        if (id == pool[0].get_transaction_id() && selection.rejected[i].get_amount() == 5 &&
+            selection.rejected[i].get_sender() == C)
+            expected = "siuntejui nepakako lesu";
+        else if (id == pool[1].get_transaction_id())
+            expected = "nezinomas dalyvis";
+        reasons_match = selection.reject_reasons[i] == expected;
+    }
+    CHECK(reasons_match);
+
+    // Visas ciklas: priezastys patenka i rezultata ta pacia tvarka kaip atmestos transakcijos.
+    Blockchain chain(1);
+    MiningResult result = run_mining(pool, balances, chain, rng, false);
+    CHECK(result.included == 1);
+    CHECK(result.rejected.size() == 3);
+    CHECK(result.reject_reasons.size() == result.rejected.size());
+    CHECK(pool.empty());
+
+    // Kai nieko negalima itraukti, priezastys taip pat issaugomos.
+    std::vector<Transaction> hopeless = {make_transaction(C, A, 5, 10), make_transaction(C, B, 7, 11)};
+    MiningResult nothing = run_mining(hopeless, balances, chain, rng, false);
+    CHECK(nothing.included == 0);
+    CHECK(nothing.reject_reasons.size() == 2);
+    CHECK(nothing.reject_reasons.size() == 2 && nothing.reject_reasons[0] == "siuntejui nepakako lesu" &&
+          nothing.reject_reasons[1] == "siuntejui nepakako lesu");
+
+    // BalanceState::check atskiria visas priezastis ir nieko nekeicia.
+    CHECK(balances.check(make_transaction(B, C, 1, 20)) == "");
+    CHECK(balances.check(make_transaction(B, B, 1, 21)) == "siuntejas ir gavejas sutampa");
+    CHECK(balances.check(make_transaction(B, C, 0, 22)) == "netinkama suma");
+    CHECK(balances.check(make_transaction(B, C, 100000, 23)) == "siuntejui nepakako lesu");
+    CHECK(balances.check(make_transaction(key("Z"), C, 1, 24)) == "nezinomas dalyvis");
+    const Bakugan max = std::numeric_limits<Bakugan>::max();
+    std::vector<User> rich = {User("a", A, 10), User("b", B, max - 5)};
+    BalanceState near_limit(rich);
+    CHECK(near_limit.check(make_transaction(A, B, 10, 25)) == "gavejo balanso perpildymas");
+    CHECK(near_limit.check(make_transaction(A, B, 5, 26)) == "");
+    CHECK(near_limit.get_balance(A) == 10 && near_limit.get_balance(B) == max - 5);
+}
+
+static void test_input_limits()
+{
+    std::cout << "Ribos: sudetingumas ir mazi balansai\n";
+
+    // Sudetingumo 65 patenkinti neimanoma, todel tokia grandine nesukuriama.
+    CHECK(throws_invalid_argument([] { Blockchain chain(max_difficulty + 1); }));
+    CHECK(!throws_invalid_argument([] { Blockchain chain(max_difficulty); }));
+    CHECK(Blockchain(0).get_difficulty() == 0);
+
+    // v0.2 cia dalijo is nulio: siuntejo balansas mazesnis nei 10.
+    const std::vector<User> poor = {User("a", key("A"), 0), User("b", key("B"), 3), User("c", key("C"), 9)};
+    const std::vector<Transaction> transactions = generate_transactions(5, poor, 200);
+    CHECK(transactions.size() == 200);
+    bool all_amount_one = true;
+    for (const Transaction &transaction : transactions)
+    {
+        all_amount_one = all_amount_one && transaction.get_amount() == 1;
+    }
+    CHECK(all_amount_one);
+
+    // Ir toks rinkinys apdorojamas iki galo, o lesu suma nesikeicia.
+    BalanceState balances(poor);
+    Blockchain chain(1);
+    std::vector<Transaction> pool = transactions;
+    std::mt19937_64 rng(1);
+    MiningResult result = run_mining(pool, balances, chain, rng, false);
+    CHECK(pool.empty());
+    CHECK(result.included + result.rejected.size() == 200);
+    CHECK(balances.sum() == 12);
+}
+
 struct RunResult
 {
     Hash tip;
@@ -411,6 +622,9 @@ int main()
     test_hash_stream_matches_hash();
     test_fast_mining_matches_slow_check();
     test_merkle_module();
+    test_block_rejection_reasons();
+    test_selection_reasons();
+    test_input_limits();
     test_same_chain_as_v02();
 
     std::cout << "\nv0.3 patikros: " << checks << ", nepavyko: " << failures << "\n";

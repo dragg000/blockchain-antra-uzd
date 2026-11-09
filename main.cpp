@@ -11,13 +11,40 @@
 #include <stdexcept>
 #include <string>
 
+// Priima tik skaitmenis, nuo 1 iki 1 000 000. std::stoull priimtu ir "-5" ar "12abc".
+static bool parse_transaction_count(const std::string &text, uint64_t &count)
+{
+    if (text.empty() || text.size() > 7)
+        return false;
+
+    uint64_t value = 0;
+    for (char c : text)
+    {
+        if (c < '0' || c > '9')
+            return false;
+        value = value * 10 + static_cast<uint64_t>(c - '0');
+    }
+
+    if (value == 0 || value > 1000000)
+        return false;
+
+    count = value;
+    return true;
+}
+
 int main(int argc, char *argv[])
 {
     const uint64_t user_seed = 1;
     const uint64_t transaction_seed = 2;
     const uint64_t selection_seed = 3;
     const uint32_t difficulty = 3;
-    const uint64_t transaction_count = argc > 1 ? std::stoull(argv[1]) : 10000;
+    uint64_t transaction_count = 10000;
+    if (argc > 1 && !parse_transaction_count(argv[1], transaction_count))
+    {
+        std::cout << "Netinkamas transakciju skaicius: " << argv[1] << "\n"
+                  << "Naudojimas: ./blockchain [transakciju skaicius nuo 1 iki 1000000]\n";
+        return 2;
+    }
 
     std::vector<User> users = generate_users(user_seed);
     std::vector<Transaction> generated = generate_transactions(transaction_seed, users, transaction_count);
@@ -86,14 +113,11 @@ int main(int argc, char *argv[])
                   << " (suma " << item.transaction.get_amount() << "): " << item.reason << "\n";
     }
 
-    for (const Transaction &transaction : result.rejected)
+    for (size_t i = 0; i < result.rejected.size(); i++)
     {
+        const Transaction &transaction = result.rejected[i];
         std::cout << "Atmesta " << transaction.get_transaction_id()
-                  << " (suma " << transaction.get_amount() << "): "
-                  << (balances.has_user(transaction.get_sender()) && balances.has_user(transaction.get_receiver())
-                          ? "siuntejui nepakako lesu"
-                          : "nezinomas dalyvis")
-                  << "\n";
+                  << " (suma " << transaction.get_amount() << "): " << result.reject_reasons[i] << "\n";
     }
 
     return 0;

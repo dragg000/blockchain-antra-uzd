@@ -19,19 +19,19 @@ Selection select_transaction(const std::vector<Transaction> &pool, const Balance
         Transaction transaction = remaining[position];
         remaining.erase(remaining.begin() + position);
 
+        // Pirma formatas, dalyviai, ID ir pasikartojimai, tada balansas laikinoje kopijoje.
         std::string error = validate_transaction(tmp, transaction, candidate_ids);
+        if (error.empty())
+            error = tmp.check(transaction);
 
         if (!error.empty())
         {
             selection.rejected.push_back(transaction);
+            selection.reject_reasons.push_back(error);
             continue;
         }
 
-        if (tmp.apply(transaction) == false)
-        {
-            selection.rejected.push_back(transaction);
-            continue;
-        }
+        tmp.apply(transaction);
 
         selection.selected.push_back(transaction);
 
@@ -171,6 +171,10 @@ MiningResult run_mining(
                 result.rejected.end(),
                 selection.rejected.begin(),
                 selection.rejected.end());
+            result.reject_reasons.insert(
+                result.reject_reasons.end(),
+                selection.reject_reasons.begin(),
+                selection.reject_reasons.end());
 
             remove_from_pool(pool, selection.rejected);
 
@@ -188,10 +192,11 @@ MiningResult run_mining(
 
         // Laimetojas tikrinamas is naujo: nuoroda, versija, tx_root, sudetingumas, PoW
         // ir visos transakcijos patvirtintu balansu kopijoje. Tik tada keiciasi busena.
-        if (!chain.add_block(winner.block, balances))
+        std::string reason;
+        if (!chain.add_block(winner.block, balances, &reason))
         {
             throw std::runtime_error(
-                "Grandine atmete iskasta bloka");
+                "Grandine atmete iskasta bloka: " + reason);
         }
 
         result.included += winner.selection.selected.size();
@@ -200,6 +205,10 @@ MiningResult run_mining(
             result.rejected.end(),
             winner.selection.rejected.begin(),
             winner.selection.rejected.end());
+        result.reject_reasons.insert(
+            result.reject_reasons.end(),
+            winner.selection.reject_reasons.begin(),
+            winner.selection.reject_reasons.end());
 
         // Is fondo dingsta tik laimetojo transakcijos. Kitu kandidatu atrinktos
         // transakcijos lieka fonde ir gali patekti i kita bloka.

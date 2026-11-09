@@ -4,12 +4,14 @@
 #include "blockchain.hpp"
 #include <cstddef>
 #include <random>
+#include <string>
 #include <vector>
 
 struct Selection
 {
     std::vector<Transaction> selected;
     std::vector<Transaction> rejected;
+    std::vector<std::string> reject_reasons = {}; // reject_reasons[i] paaiskina rejected[i]
 };
 
 // Kiekvienas kandidatas gauna tiek bandymu per eile. Jei per visa eile niekas nerado nonce,
@@ -34,6 +36,7 @@ struct Candidate
 struct MiningResult
 {
     std::vector<Transaction> rejected;
+    std::vector<std::string> reject_reasons; // reject_reasons[i] paaiskina rejected[i]
     size_t included = 0;
 
     // Kandidatu suvestine per visa paleidima.

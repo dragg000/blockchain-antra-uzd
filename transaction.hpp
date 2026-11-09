@@ -34,4 +34,4 @@ public:
     }
 };
 
-std::vector<Transaction> generate_transactions(uint64_t seed, std::vector<User>& users, uint64_t transaction_count);
+std::vector<Transaction> generate_transactions(uint64_t seed, const std::vector<User>& users, uint64_t transaction_count);

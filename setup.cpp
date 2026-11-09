@@ -1,6 +1,7 @@
 #include "user.hpp"
 #include "hash.hpp"
 #include "transaction.hpp"
+#include <algorithm>
 #include <random>
 #include <set>
 #include <stdexcept>
@@ -36,7 +37,7 @@ std::vector<User> generate_users(uint64_t seed)
     return users;
 }
 
-std::vector<Transaction> generate_transactions(uint64_t seed, std::vector<User>& users, uint64_t transaction_count)
+std::vector<Transaction> generate_transactions(uint64_t seed, const std::vector<User>& users, uint64_t transaction_count)
 {
     uint64_t minimum_transaction = 1;
     std::vector<Transaction> transactions;
@@ -59,12 +60,13 @@ std::vector<Transaction> generate_transactions(uint64_t seed, std::vector<User>&
             receiver_index = rng() % users.size();
         }
 
-        User& sender = users[sender_index];
-        User& receiver = users[receiver_index];
+        const User& sender = users[sender_index];
+        const User& receiver = users[receiver_index];
 
         Hash sender_key = sender.get_key();
         Hash receiver_key = receiver.get_key();
-        uint64_t maximum_transaction = sender.get_balance() / 10;
+        // Bent 1, kad siuntejui su balansu iki 9 nebutu dalijama is nulio.
+        uint64_t maximum_transaction = std::max<uint64_t>(1, sender.get_balance() / 10);
         uint64_t amount = minimum_transaction + rng() % maximum_transaction;
 
         Transaction transaction(sender_key, receiver_key, amount, "", sequence);
