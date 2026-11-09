@@ -72,7 +72,7 @@ size_t mine_candidates(std::vector<Candidate> &candidates, uint64_t start_budget
 // kuri gija greitesne.
 //
 // Kai kandidatas randa nonce, didesnio numerio kandidatai sustabdomi: jie sioje eileje laimeti
-// nebegali. Mazesnio numerio kandidatai savo biudzeta baigia, nes radę jie turetu pirmenybe.
+// nebegali. Mazesnio numerio kandidatai savo biudzeta baigia, nes rade jie turetu pirmenybe.
 // Kiekviena gija dirba tik su savo kandidatu, bendras yra tik vienas atominis kintamasis.
 size_t mine_candidates_parallel(std::vector<Candidate> &candidates, uint64_t start_budget, size_t max_passes);
 
