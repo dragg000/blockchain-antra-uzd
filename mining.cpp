@@ -223,7 +223,8 @@ static void print_block(const Blockchain &chain, const std::vector<Candidate> &c
               << "  difficulty:    " << header.get_difficulty() << "\n"
               << "  nonce:         " << header.get_nonce() << "\n"
               << "  bandymai:      " << winner.attempts << "\n"
-              << "  kasimo laikas: " << winner.seconds << " s\n"
+              << "  kasimo laikas: " << std::fixed << std::setprecision(6) << winner.seconds
+              << std::defaultfloat << std::setprecision(6) << " s\n"
               << "  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas\n";
 
     for (size_t i = 0; i < candidates.size(); i++)
