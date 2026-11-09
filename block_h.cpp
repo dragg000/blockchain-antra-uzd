@@ -1,5 +1,6 @@
 #include "block_h.hpp"
 #include "hash.hpp"
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 
@@ -29,50 +30,34 @@ bool Block::hasValidProofOfWork() const
 
 void Block::mine(uint64_t &attempts, double &elapsed_seconds)
 {
-    uint64_t count = 0;
-
-    auto start = std::chrono::steady_clock::now();
-    
-
-    while (!hasValidProofOfWork())
-    {
-        header.set_nonce(header.get_nonce() + 1);
-        count++;
-    }
-    auto end = std::chrono::steady_clock::now();
-
-    attempts = count + 1;
-
-    elapsed_seconds =
-        std::chrono::duration_cast<std::chrono::duration<double>>(end - start).count();
+    // Be biudzeto: tas pats ciklas, tik riba yra didziausias galimas skaicius.
+    mine(std::numeric_limits<uint64_t>::max(), attempts, elapsed_seconds);
 }
 
+// Tikrina daugiausia `budget` nonce reiksmiu, pradedant nuo dabartines.
+// Radus tinkama: grazina true, antrasteje lieka tinkamas nonce.
+// Neradus: grazina false, antrasteje lieka pirmas dar netikrintas nonce,
+// todel kitas kvietimas tesia paieska ir nieko netikrina du kartus.
+// `attempts` visada lygus atliktu maisos skaiciavimu skaiciui.
 bool Block::mine(uint64_t budget, uint64_t &attempts, double &elapsed_seconds)
 {
-    bool success = false;
-    uint64_t count = 0;
-
     auto start = std::chrono::steady_clock::now();
-    
-    while (count < budget && !hasValidProofOfWork())
+
+    bool found = false;
+    attempts = 0;
+    while (attempts < budget)
     {
+        attempts++;
+        if (hasValidProofOfWork())
+        {
+            found = true;
+            break;
+        }
         header.set_nonce(header.get_nonce() + 1);
-        count++;
     }
-    auto end = std::chrono::steady_clock::now();
 
-    if(hasValidProofOfWork())
-    {
-        success = true;
-        attempts = count + 1;
-    }
-    else
-        attempts = count;
-
-    elapsed_seconds =
-        std::chrono::duration_cast<std::chrono::duration<double>>(end - start).count();
-    
-    return success;
+    elapsed_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    return found;
 }
 
 Hash Block::calculateTxRoot() const

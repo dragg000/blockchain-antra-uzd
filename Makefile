@@ -11,8 +11,13 @@ blockchain: main.cpp $(SOURCES) $(HEADERS)
 run_tests: tests/tests.cpp $(SOURCES) $(HEADERS)
 	$(CXX) $(CXXFLAGS) tests/tests.cpp $(SOURCES) -o run_tests
 
-test: run_tests
+run_tests_v03: tests/tests_v03.cpp $(SOURCES) $(HEADERS)
+	$(CXX) $(CXXFLAGS) tests/tests_v03.cpp $(SOURCES) -o run_tests_v03
+
+# run_tests yra bendras v0.2 ir v0.3 rinkinys, run_tests_v03 tikrina tik v0.3 pakeitimus.
+test: run_tests run_tests_v03
 	./run_tests
+	./run_tests_v03
 
 run_bench: bench.cpp $(SOURCES) $(HEADERS)
 	$(CXX) $(CXXFLAGS) bench.cpp $(SOURCES) -o run_bench
@@ -21,6 +26,6 @@ bench: run_bench
 	./run_bench
 
 clean:
-	rm -f blockchain run_tests run_bench
+	rm -f blockchain run_tests run_tests_v03 run_bench
 
 .PHONY: all test bench clean
