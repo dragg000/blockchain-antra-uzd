@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <limits>
 #include <string>
 #include "transaction.hpp"
@@ -10,7 +10,7 @@ class BalanceState
 {
 
 private:
-    std::map<Key, Bakugan> balances;
+    std::unordered_map<Key, Bakugan> balances;
     Bakugan initial_total;
 
 public:
