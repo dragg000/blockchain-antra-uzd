@@ -28,12 +28,19 @@ struct Candidate
     uint64_t attempts = 0;
     double seconds = 0.0;
     bool found = false;
+    size_t turns = 0; // kiek kartu kandidatas gavo eile kasti
 };
 
 struct MiningResult
 {
     std::vector<Transaction> rejected;
     size_t included = 0;
+
+    // Kandidatu suvestine per visa paleidima.
+    std::vector<size_t> wins;        // wins[i] - kiek bloku laimejo kandidatas i + 1
+    uint64_t candidate_attempts = 0; // visu kandidatu bandymai, iskaitant nelaimejusius
+    double candidate_seconds = 0.0;  // visu kandidatu kasimo laikas
+    size_t budget_raises = 0;        // kiek kartu teko dvigubinti biudzeta
 };
 
 Selection select_transaction(const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng, const std::set<Hash> &known_ids);

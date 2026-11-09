@@ -67,6 +67,19 @@ int main(int argc, char *argv[])
               << "  galutine lesu suma:     " << balances.sum() << "\n"
               << "  bendras laikas:         " << std::chrono::duration<double>(end - start).count() << " s\n";
 
+    std::cout << "\nKandidatai\n"
+              << "  kandidatu vienam blokui: " << candidates_per_block << "\n"
+              << "  pradinis biudzetas:      " << candidate_start_budget << " bandymu per eile\n"
+              << "  visu kandidatu bandymai: " << result.candidate_attempts << "\n"
+              << "  visu kandidatu laikas:   " << result.candidate_seconds << " s\n"
+              << "  biudzetas dvigubintas:   " << result.budget_raises << " k.\n"
+              << "  laimeti blokai:         ";
+    for (size_t i = 0; i < result.wins.size(); i++)
+    {
+        std::cout << " nr " << i + 1 << ": " << result.wins[i] << (i + 1 < result.wins.size() ? "," : "\n");
+    }
+    std::cout << "\n";
+
     for (const RefusedTransaction &item : refused)
     {
         std::cout << "Neileista i fonda " << item.transaction.get_transaction_id()

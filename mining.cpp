@@ -1,6 +1,7 @@
 #include "mining.hpp"
 #include "validation.hpp"
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <set>
 #include <stdexcept>
@@ -66,6 +67,7 @@ size_t mine_candidates(std::vector<Candidate> &candidates, uint64_t start_budget
 
             candidate.attempts += attempts;
             candidate.seconds += seconds;
+            candidate.turns++;
 
             if (found)
             {
@@ -97,10 +99,11 @@ void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transact
                pool.end());
 }
 
-static void print_block(const Blockchain &chain, uint64_t attempts, double seconds)
+static void print_block(const Blockchain &chain, const std::vector<Candidate> &candidates, size_t winner_index)
 {
     const Block &block = chain.tip();
     const Block_h header = block.get_header();
+    const Candidate &winner = candidates[winner_index];
 
     std::cout << "Blokas #" << chain.height() << "\n"
               << "  transakcijos:  " << block.get_transactions().size() << "\n"
@@ -109,8 +112,27 @@ static void print_block(const Blockchain &chain, uint64_t attempts, double secon
               << "  hash:          " << block.calculateHash() << "\n"
               << "  difficulty:    " << header.get_difficulty() << "\n"
               << "  nonce:         " << header.get_nonce() << "\n"
-              << "  bandymai:      " << attempts << "\n"
-              << "  kasimo laikas: " << seconds << " s\n";
+              << "  bandymai:      " << winner.attempts << "\n"
+              << "  kasimo laikas: " << winner.seconds << " s\n"
+              << "  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas\n";
+
+    for (size_t i = 0; i < candidates.size(); i++)
+    {
+        const Candidate &candidate = candidates[i];
+        const char *outcome = "nerado";
+        if (candidate.found)
+            outcome = "laimejo";
+        else if (candidate.turns == 0)
+            outcome = "nekase";
+
+        std::cout << "                 " << std::setw(2) << i + 1
+                  << std::setw(14) << candidate.selection.selected.size()
+                  << std::setw(7) << candidate.turns
+                  << std::setw(10) << candidate.attempts
+                  << std::setw(11) << std::fixed << std::setprecision(6) << candidate.seconds
+                  << std::defaultfloat << std::setprecision(6)
+                  << "  " << outcome << "\n";
+    }
 }
 
 MiningResult run_mining(
@@ -121,6 +143,7 @@ MiningResult run_mining(
     bool print_blocks)
 {
     MiningResult result;
+    result.wins.assign(candidates_per_block, 0);
 
     while (!pool.empty())
     {
@@ -183,8 +206,16 @@ MiningResult run_mining(
         remove_from_pool(pool, winner.selection.selected);
         remove_from_pool(pool, winner.selection.rejected);
 
+        result.wins[winner_index]++;
+        result.budget_raises += winner.turns - 1;
+        for (const Candidate &candidate : candidates)
+        {
+            result.candidate_attempts += candidate.attempts;
+            result.candidate_seconds += candidate.seconds;
+        }
+
         if (print_blocks)
-            print_block(chain, winner.attempts, winner.seconds);
+            print_block(chain, candidates, winner_index);
     }
 
     return result;
