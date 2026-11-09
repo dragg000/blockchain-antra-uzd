@@ -27,8 +27,8 @@ public:
     // Ar transakcija tilptu i sia busena. Grazina tuscia eilute arba priezasti. Nieko nekeicia.
     std::string check(const Transaction &transaction) const
     {
-        const Key sender = transaction.get_sender();
-        const Key receiver = transaction.get_receiver();
+        const Key &sender = transaction.get_sender();
+        const Key &receiver = transaction.get_receiver();
         const Bakugan amount = transaction.get_amount();
 
         const auto from = balances.find(sender);

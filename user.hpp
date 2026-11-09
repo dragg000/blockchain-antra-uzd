@@ -26,8 +26,8 @@ public:
     void set_public_key(Key& key) { public_key = key; }
     void set_balance(Bakugan& b) { balance = b; }
 
-    string get_name() const { return name; }
-    Key get_key() const { return public_key; }
+    const string &get_name() const { return name; }
+    const Key &get_key() const { return public_key; }
     Bakugan get_balance() const { return balance; }
 };
 

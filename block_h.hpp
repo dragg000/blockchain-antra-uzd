@@ -43,8 +43,8 @@ public:
     void set_difficulty(uint32_t difficulty) { this->difficulty = difficulty; }
     void set_nonce(uint64_t nonce) { this->nonce = nonce; }
 
-    Hash get_prev_hash() const { return prev_hash; }
-    Hash get_tx_root() const { return tx_root; }
+    const Hash &get_prev_hash() const { return prev_hash; }
+    const Hash &get_tx_root() const { return tx_root; }
     uint64_t get_timestamp() const { return timestamp; }
     uint32_t get_version() const { return version; }
     uint32_t get_difficulty() const { return difficulty; }
@@ -64,13 +64,14 @@ public:
     // Konstruktorius pats apskaiciuoja tx_root. Jei kurios nors transakcijos ID nera
     // 64 mazieji hex simboliai, meta std::invalid_argument: blokas su tokiu ID negali egzistuoti.
     Block(Block_h header, std::vector<Transaction> transactions)
-        : header(header), transactions(transactions)
+        : header(std::move(header)), transactions(std::move(transactions))
     {
         this->header.set_tx_root(calculateTxRoot());
     }
 
-    Block_h get_header() const { return header; }
-    std::vector<Transaction> get_transactions() const { return transactions; }
+    // Grazinamos nuorodos, ne kopijos: jos galioja tol, kol gyvas pats blokas.
+    const Block_h &get_header() const { return header; }
+    const std::vector<Transaction> &get_transactions() const { return transactions; }
 
     Hash calculateHash() const;
     bool hasValidProofOfWork() const;

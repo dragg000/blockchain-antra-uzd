@@ -17,10 +17,10 @@ std::string validate_transaction(const BalanceState &balance,
                                  const Transaction &transaction,
                                  const std::set<Hash> &known_ids)
 {
-    const Key sender = transaction.get_sender();
-    const Key receiver = transaction.get_receiver();
+    const Key &sender = transaction.get_sender();
+    const Key &receiver = transaction.get_receiver();
     const Bakugan amount = transaction.get_amount();
-    const Hash id = transaction.get_transaction_id();
+    const Hash &id = transaction.get_transaction_id();
 
     if (!isHex64(sender) || !isHex64(receiver) || !isHex64(id))
     {

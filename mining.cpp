@@ -5,22 +5,35 @@
 #include <iostream>
 #include <set>
 #include <stdexcept>
+#include <utility>
 
 Selection select_transaction(const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng, const std::set<Hash> &known_ids)
 {
     Selection selection;
     BalanceState tmp = balances;
-    std::vector<Transaction> remaining = pool;
-    std::set<Hash> candidate_ids = known_ids;
 
-    while (selection.selected.size() < 100 && remaining.empty() == false)
+    // Fondas nekopijuojamas: traukiami ir salinami tik transakciju indeksai.
+    // Traukimo taisykle ta pati kaip v0.2 (atsitiktine vieta likusiu sarase, salinama islaikant tvarka),
+    // todel tas pats seed atrenka tas pacias transakcijas.
+    std::vector<size_t> remaining(pool.size());
+    for (size_t i = 0; i < remaining.size(); i++)
+    {
+        remaining[i] = i;
+    }
+
+    // Patvirtintu ID aibe nekopijuojama: sio kandidato ID renkami atskirai.
+    std::set<Hash> candidate_ids;
+
+    while (selection.selected.size() < max_block_transactions && remaining.empty() == false)
     {
         size_t position = rng() % remaining.size();
-        Transaction transaction = remaining[position];
+        const Transaction &transaction = pool[remaining[position]];
         remaining.erase(remaining.begin() + position);
 
         // Pirma formatas, dalyviai, ID ir pasikartojimai, tada balansas laikinoje kopijoje.
-        std::string error = validate_transaction(tmp, transaction, candidate_ids);
+        std::string error = validate_transaction(tmp, transaction, known_ids);
+        if (error.empty() && candidate_ids.count(transaction.get_transaction_id()) > 0)
+            error = "pasikartojantis ID";
         if (error.empty())
             error = tmp.check(transaction);
 
@@ -182,9 +195,11 @@ MiningResult run_mining(
         }
 
         std::vector<Candidate> candidates;
-        for (const Selection &selection : selections)
+        candidates.reserve(selections.size());
+        for (Selection &selection : selections)
         {
-            candidates.push_back(Candidate{selection, chain.prepare_block(selection.selected)});
+            Block block = chain.prepare_block(selection.selected);
+            candidates.push_back(Candidate{std::move(selection), std::move(block)});
         }
 
         size_t winner_index = mine_candidates(candidates, candidate_start_budget, candidate_max_passes);

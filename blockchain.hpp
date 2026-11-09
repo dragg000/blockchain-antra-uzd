@@ -22,9 +22,9 @@ private:
 
     void create_genesis_block();
 
-    // Visos bloko patikros. `state` ir `ids` yra kopijos, kuriose pritaikomos bloko transakcijos.
-    // Grazina tuscia eilute arba atmetimo priezasti.
-    std::string validate_block(const Block &block, BalanceState &state, std::set<Hash> &ids) const;
+    // Visos bloko patikros. `state` yra balansu kopija, kurioje pritaikomos bloko transakcijos,
+    // i `block_ids` surenkami sio bloko transakciju ID. Grazina tuscia eilute arba atmetimo priezasti.
+    std::string validate_block(const Block &block, BalanceState &state, std::set<Hash> &block_ids) const;
 
 public:
     // Sukuria genesis. Meta std::invalid_argument, jei difficulty > max_difficulty.

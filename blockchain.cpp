@@ -2,6 +2,7 @@
 #include "block_h.hpp"
 #include "validation.hpp"
 #include <stdexcept>
+#include <utility>
 
 Blockchain::Blockchain(uint32_t difficulty) : difficulty(difficulty)
 {
@@ -45,7 +46,7 @@ uint32_t Blockchain::get_difficulty() const
     return difficulty;
 }
 
-std::string Blockchain::validate_block(const Block &block, BalanceState &state, std::set<Hash> &ids) const
+std::string Blockchain::validate_block(const Block &block, BalanceState &state, std::set<Hash> &block_ids) const
 {
     const Block_h &header = block.get_header();
 
@@ -78,7 +79,11 @@ std::string Blockchain::validate_block(const Block &block, BalanceState &state, 
     {
         const Transaction &transaction = transactions[i];
 
-        std::string error = validate_transaction(state, transaction, ids);
+        // ID negali buti nei patvirtintoje grandineje, nei ankstesnese sio bloko transakcijose.
+        // Patvirtintu ID aibe nekopijuojama: sio bloko ID renkami atskirai.
+        std::string error = validate_transaction(state, transaction, known_transaction_ids);
+        if (error.empty() && block_ids.count(transaction.get_transaction_id()) > 0)
+            error = "pasikartojantis ID";
         if (error.empty())
             error = state.check(transaction);
 
@@ -86,7 +91,7 @@ std::string Blockchain::validate_block(const Block &block, BalanceState &state, 
             return "transakcija " + std::to_string(i + 1) + ": " + error;
 
         state.apply(transaction);
-        ids.insert(transaction.get_transaction_id());
+        block_ids.insert(transaction.get_transaction_id());
     }
 
     return "";
@@ -95,16 +100,16 @@ std::string Blockchain::validate_block(const Block &block, BalanceState &state, 
 std::string Blockchain::check_block(const Block &block, const BalanceState &balances) const
 {
     BalanceState state(balances);
-    std::set<Hash> ids = known_transaction_ids;
-    return validate_block(block, state, ids);
+    std::set<Hash> block_ids;
+    return validate_block(block, state, block_ids);
 }
 
 bool Blockchain::add_block(const Block &block, BalanceState &balances, std::string *reason)
 {
     BalanceState state(balances);
-    std::set<Hash> ids = known_transaction_ids;
+    std::set<Hash> block_ids;
 
-    const std::string error = validate_block(block, state, ids);
+    const std::string error = validate_block(block, state, block_ids);
     if (reason != nullptr)
         *reason = error;
 
@@ -113,8 +118,8 @@ bool Blockchain::add_block(const Block &block, BalanceState &balances, std::stri
 
     // Visos patikros praejo: grandine, balansai ir ID aibe keiciami kartu.
     blocks.push_back(block);
-    balances = state;
-    known_transaction_ids = ids;
+    balances = std::move(state);
+    known_transaction_ids.insert(block_ids.begin(), block_ids.end());
     return true;
 }
 
