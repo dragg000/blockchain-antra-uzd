@@ -12,7 +12,7 @@ Ka daro:
   4. Grandine: paleidzia abi programas su tais paciais duomenimis ir palygina kiekvieno bloko
      auksti, transakciju skaiciu, prev_hash, tx_root, hash, difficulty ir nonce bei galutine suvestine.
   5. Sparta: ta pati bench.cpp programa paleidziama pakaitomis (v0.2, v0.3, v0.2, v0.3, ...),
-     kad abi versijos butu matuojamos tomis paciomis salygomis. Pateikiamas vidurkis ir nuokrypis.
+     kad abi versijos butu matuojamos tomis paciomis salygomis. Pateikiamas vidurkis, nuokrypis ir mediana.
   6. Atmintis: didziausias ./blockchain atminties naudojimas pagal /usr/bin/time -l.
 
 Reikia: git, make, C++17 kompiliatoriaus, python3.
@@ -170,15 +170,18 @@ def main():
             new_times.append(times)
 
         print()
-        print("%-36s %-22s %-22s %s" % ("Matavimas", "v0.2 vidurkis (nuokr.)", "v0.3 vidurkis (nuokr.)", "Santykis"))
+        print("%-34s %-30s %-30s %s" % ("Matavimas", "v0.2: vidurkis (nuokr.), mediana",
+                                         "v0.3: vidurkis (nuokr.), mediana", "Medianu santykis"))
         for index, name in enumerate(MEASUREMENTS):
             old = [row[index] for row in old_times]
             new = [row[index] for row in new_times]
             old_dev = statistics.stdev(old) if len(old) > 1 else 0.0
             new_dev = statistics.stdev(new) if len(new) > 1 else 0.0
-            print("%-36s %8.4f s (%.4f)    %8.4f s (%.4f)    %5.2f karto" %
-                  (name, statistics.mean(old), old_dev, statistics.mean(new), new_dev,
-                   statistics.mean(old) / statistics.mean(new)))
+            print("%-34s %.4f s (%.4f), %.4f s    %.4f s (%.4f), %.4f s    %5.2f karto" %
+                  (name, statistics.mean(old), old_dev, statistics.median(old),
+                   statistics.mean(new), new_dev, statistics.median(new),
+                   statistics.median(old) / statistics.median(new)))
+        print("Santykis skaiciuojamas is medianu, nes jos maziau jautrios pavieniams sutrikdytiems kartojimams.")
         print()
         print("Viso paleidimo paskutinio bloko hash: v0.2 %s" % old_tip)
         print("                                      v0.3 %s (%s)" % (new_tip, "sutampa" if old_tip == new_tip else "NESUTAMPA"))
