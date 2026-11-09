@@ -553,6 +553,183 @@ static void test_input_limits()
     CHECK(balances.sum() == 12);
 }
 
+static std::vector<Candidate> make_candidates(const Blockchain &chain, const std::vector<Transaction> &pool,
+                                              const BalanceState &balances, uint64_t seed)
+{
+    std::mt19937_64 rng(seed);
+    std::vector<Candidate> candidates;
+    for (const Selection &selection : build_candidates(5, pool, balances, rng, chain.get_transaction_ids()))
+    {
+        candidates.push_back(Candidate{selection, chain.prepare_block(selection.selected)});
+    }
+    return candidates;
+}
+
+// Kandidatas su pasirinktu sudetingumu: 1 randa greitai, 16 praktiskai niekada.
+static Candidate crafted_candidate(uint32_t difficulty, uint64_t variant)
+{
+    const std::vector<Transaction> transactions = {make_transaction(key("A"), key("B"), 1 + variant, variant)};
+    return Candidate{Selection{transactions, {}},
+                     Block(Block_h(std::string(64, '0'), "", 1001, 2, difficulty, 0), transactions)};
+}
+
+static void test_parallel_matches_sequential()
+{
+    std::cout << "Lygiagretus kasimas: tas pats laimetojas ir nonce kaip nuosekliame\n";
+    std::vector<User> users = generate_users(1);
+    const std::vector<Transaction> pool = generate_transactions(2, users, 600);
+    BalanceState balances(users);
+
+    bool same_winner = true;
+    bool same_nonce = true;
+    bool earlier_did_same_work = true;
+    bool one_winner_valid = true;
+    size_t multi_pass_cases = 0;
+    for (uint32_t difficulty = 1; difficulty <= 3; difficulty++)
+    {
+        Blockchain chain(difficulty);
+        for (uint64_t seed = 0; seed < 12; seed++)
+        {
+            // Mazas pradinis biudzetas, kad daznai prireiktu keliu eiliu.
+            const uint64_t start_budget = difficulty == 3 ? 300 : 5;
+
+            std::vector<Candidate> sequential = make_candidates(chain, pool, balances, seed);
+            const size_t expected = mine_candidates(sequential, start_budget, 20);
+            if (sequential[expected].turns > 1)
+                multi_pass_cases++;
+
+            // Tas pats darbas kelis kartus: rezultatas neturi priklausyti nuo giju greicio.
+            for (int repeat = 0; repeat < 5; repeat++)
+            {
+                std::vector<Candidate> parallel = make_candidates(chain, pool, balances, seed);
+                const size_t winner = mine_candidates_parallel(parallel, start_budget, 20);
+
+                same_winner = same_winner && winner == expected;
+                same_nonce = same_nonce &&
+                             parallel[winner].block.get_header().get_nonce() ==
+                                 sequential[expected].block.get_header().get_nonce() &&
+                             parallel[winner].block.calculateHash() == sequential[expected].block.calculateHash();
+                one_winner_valid = one_winner_valid && parallel[winner].found &&
+                                   parallel[winner].block.hasValidProofOfWork() && !parallel[winner].stopped;
+
+                // Mazesnio numerio kandidatai atliko lygiai ta pati darba kaip nuosekliame kasime.
+                for (size_t i = 0; i < winner && i < expected; i++)
+                {
+                    earlier_did_same_work = earlier_did_same_work && !parallel[i].found && !parallel[i].stopped &&
+                                            parallel[i].attempts == sequential[i].attempts &&
+                                            parallel[i].turns == sequential[i].turns &&
+                                            parallel[i].block.get_header().get_nonce() ==
+                                                sequential[i].block.get_header().get_nonce();
+                }
+            }
+        }
+    }
+    CHECK(same_winner);
+    CHECK(same_nonce);
+    CHECK(one_winner_valid);
+    CHECK(earlier_did_same_work);
+    CHECK(multi_pass_cases > 0);
+}
+
+static void test_parallel_stops_and_priority()
+{
+    std::cout << "Lygiagretus kasimas: kiti sustabdomi, pirmenybe mazesniam numeriui\n";
+
+    // 1 kandidatas randa is karto, kiti niekada. Be sustabdymo jie atliktu po 5 mln. bandymu.
+    {
+        const uint64_t budget = 5000000;
+        std::vector<Candidate> candidates;
+        candidates.push_back(crafted_candidate(1, 0));
+        for (uint64_t i = 1; i < 5; i++)
+        {
+            candidates.push_back(crafted_candidate(16, i));
+        }
+        const size_t winner = mine_candidates_parallel(candidates, budget, 1);
+        CHECK(winner == 0);
+        CHECK(candidates[0].found && !candidates[0].stopped);
+        bool others_stopped = true;
+        for (size_t i = 1; i < candidates.size(); i++)
+        {
+            others_stopped = others_stopped && candidates[i].stopped && !candidates[i].found &&
+                             candidates[i].attempts < budget;
+        }
+        CHECK(others_stopped);
+    }
+
+    // Laimi 2 kandidatas: 1-asis privalo baigti visa savo biudzeta, nes rades turetu pirmenybe.
+    {
+        std::vector<Candidate> candidates;
+        candidates.push_back(crafted_candidate(16, 0));
+        candidates.push_back(crafted_candidate(1, 1));
+        candidates.push_back(crafted_candidate(16, 2));
+        const size_t winner = mine_candidates_parallel(candidates, 3000, 1);
+        CHECK(winner == 1);
+        CHECK(candidates[0].attempts == 3000 && !candidates[0].stopped && !candidates[0].found);
+        CHECK(candidates[0].block.get_header().get_nonce() == 3000);
+        CHECK(!candidates[2].found);
+    }
+
+    // Abu randa per ta pacia eile, antrasis greiciau. Laimeti vis tiek turi pirmasis.
+    {
+        // Ieskoma pora, kurioje pirmam kandidatui reikia daugiau bandymu nei antram.
+        uint64_t slow_variant = 0;
+        uint64_t fast_variant = 0;
+        uint64_t slow_attempts = 0;
+        uint64_t fast_attempts = 0;
+        for (uint64_t variant = 0; variant < 200 && (slow_attempts < 400 || fast_attempts == 0); variant++)
+        {
+            Candidate probe = crafted_candidate(2, variant);
+            uint64_t attempts = 0;
+            double seconds = 0.0;
+            probe.block.mine(attempts, seconds);
+            if (attempts >= 400 && slow_attempts < 400)
+            {
+                slow_variant = variant;
+                slow_attempts = attempts;
+            }
+            else if (attempts <= 20 && fast_attempts == 0)
+            {
+                fast_variant = variant;
+                fast_attempts = attempts;
+            }
+        }
+        CHECK(slow_attempts >= 400 && fast_attempts > 0 && fast_attempts <= 20);
+
+        bool first_always_wins = true;
+        for (int repeat = 0; repeat < 40; repeat++)
+        {
+            std::vector<Candidate> candidates;
+            candidates.push_back(crafted_candidate(2, slow_variant));
+            candidates.push_back(crafted_candidate(2, fast_variant));
+            const size_t winner = mine_candidates_parallel(candidates, 100000, 1);
+            first_always_wins = first_always_wins && winner == 0 && candidates[0].attempts == slow_attempts &&
+                                candidates[0].block.hasValidProofOfWork();
+        }
+        CHECK(first_always_wins);
+    }
+
+    // Niekas neranda: po leistinu eiliu metama klaida, biudzetas dvigubintas, tuscias kandidatas praleistas.
+    {
+        std::vector<Candidate> candidates;
+        candidates.push_back(crafted_candidate(16, 0));
+        candidates.push_back(Candidate{Selection{}, Block(Block_h(std::string(64, '0'), "", 1001, 2, 16, 0), {})});
+        candidates.push_back(crafted_candidate(16, 2));
+        bool threw = false;
+        try
+        {
+            mine_candidates_parallel(candidates, 5, 2);
+        }
+        catch (const std::runtime_error &)
+        {
+            threw = true;
+        }
+        CHECK(threw);
+        CHECK(candidates[0].attempts == 15 && candidates[0].block.get_header().get_nonce() == 15);
+        CHECK(candidates[1].attempts == 0 && candidates[1].turns == 0);
+        CHECK(candidates[2].attempts == 15 && candidates[2].turns == 2);
+    }
+}
+
 struct RunResult
 {
     Hash tip;
@@ -562,14 +739,14 @@ struct RunResult
     Bakugan total = 0;
 };
 
-static RunResult run_chain(uint64_t count, uint32_t difficulty, uint64_t selection_seed)
+static RunResult run_chain(uint64_t count, uint32_t difficulty, uint64_t selection_seed, MiningMode mode)
 {
     std::vector<User> users = generate_users(1);
     std::vector<Transaction> pool = generate_transactions(2, users, count);
     BalanceState balances(users);
     Blockchain chain(difficulty);
     std::mt19937_64 rng(selection_seed);
-    MiningResult result = run_mining(pool, balances, chain, rng, false);
+    MiningResult result = run_mining(pool, balances, chain, rng, false, mode);
 
     RunResult run;
     run.tip = chain.tip().calculateHash();
@@ -604,15 +781,18 @@ static const Golden golden_runs[] = {
 
 static void test_same_chain_as_v02()
 {
-    std::cout << "Ta pati grandine kaip v0.2 (7 duomenu rinkiniai)\n";
-    for (const Golden &golden : golden_runs)
+    std::cout << "Ta pati grandine kaip v0.2 (7 duomenu rinkiniai, nuosekliai ir lygiagreciai)\n";
+    for (MiningMode mode : {MiningMode::sequential, MiningMode::parallel})
     {
-        const RunResult run = run_chain(golden.count, golden.difficulty, golden.selection_seed);
-        CHECK(run.tip == golden.tip);
-        CHECK(run.blocks == golden.blocks);
-        CHECK(run.included == golden.included);
-        CHECK(run.rejected == golden.rejected);
-        CHECK(run.total == 498753171);
+        for (const Golden &golden : golden_runs)
+        {
+            const RunResult run = run_chain(golden.count, golden.difficulty, golden.selection_seed, mode);
+            CHECK(run.tip == golden.tip);
+            CHECK(run.blocks == golden.blocks);
+            CHECK(run.included == golden.included);
+            CHECK(run.rejected == golden.rejected);
+            CHECK(run.total == 498753171);
+        }
     }
 }
 
@@ -625,6 +805,8 @@ int main()
     test_block_rejection_reasons();
     test_selection_reasons();
     test_input_limits();
+    test_parallel_matches_sequential();
+    test_parallel_stops_and_priority();
     test_same_chain_as_v02();
 
     std::cout << "\nv0.3 patikros: " << checks << ", nepavyko: " << failures << "\n";

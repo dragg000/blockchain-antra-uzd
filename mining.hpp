@@ -29,8 +29,16 @@ struct Candidate
     Block block;
     uint64_t attempts = 0;
     double seconds = 0.0;
-    bool found = false;
-    size_t turns = 0; // kiek kartu kandidatas gavo eile kasti
+    bool found = false;   // kandidatas rado tinkama nonce
+    size_t turns = 0;     // kiek kartu kandidatas gavo eile kasti
+    bool stopped = false; // lygiagreciame kasime sustabdytas, nes mazesnio numerio kandidatas jau rado nonce
+};
+
+// Kaip kasami vieno bloko kandidatai. Abu budai duoda ta pati laimetoja ir ta pati nonce.
+enum class MiningMode
+{
+    sequential, // viena gija, kandidatai kasa paeiliui (kaip v0.2)
+    parallel    // kiekvienas kandidatas kasa savo gijoje
 };
 
 struct MiningResult
@@ -44,6 +52,7 @@ struct MiningResult
     uint64_t candidate_attempts = 0; // visu kandidatu bandymai, iskaitant nelaimejusius
     double candidate_seconds = 0.0;  // visu kandidatu kasimo laikas
     size_t budget_raises = 0;        // kiek kartu teko dvigubinti biudzeta
+    double mining_wall_seconds = 0.0; // kiek laiko pagal laikrodi truko kandidatu kasimas
 };
 
 Selection select_transaction(const std::vector<Transaction> &pool, const BalanceState &balances, std::mt19937_64 &rng, const std::set<Hash> &known_ids);
@@ -56,6 +65,17 @@ std::vector<Selection> build_candidates(size_t candidate_count, const std::vecto
 // Kandidatai be transakciju praleidziami.
 size_t mine_candidates(std::vector<Candidate> &candidates, uint64_t start_budget, size_t max_passes);
 
+// Tas pats, tik kiekvienos eiles metu visi kandidatai kasa vienu metu, kiekvienas savo gijoje.
+//
+// Laimetojo taisykle nepakeista: laimi maziausio numerio kandidatas, rades nonce per sios eiles biudzeta.
+// Todel laimetojas ir jo nonce visada sutampa su mine_candidates rezultatu ir nepriklauso nuo to,
+// kuri gija greitesne.
+//
+// Kai kandidatas randa nonce, didesnio numerio kandidatai sustabdomi: jie sioje eileje laimeti
+// nebegali. Mazesnio numerio kandidatai savo biudzeta baigia, nes radę jie turetu pirmenybe.
+// Kiekviena gija dirba tik su savo kandidatu, bendras yra tik vienas atominis kintamasis.
+size_t mine_candidates_parallel(std::vector<Candidate> &candidates, uint64_t start_budget, size_t max_passes);
+
 void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transaction> &to_remove);
 
 // Kasimo ciklas. Kiekvienam blokui:
@@ -65,4 +85,4 @@ void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transact
 //   4. is fondo pasalinamos tik laimetojo itrauktos ir atmestos transakcijos,
 //      nelaimejusiu kandidatu darbas ismetamas, kitam blokui kandidatai sudaromi is naujo.
 MiningResult run_mining(std::vector<Transaction> &pool, BalanceState &balances, Blockchain &chain,
-                        std::mt19937_64 &rng, bool print_blocks);
+                        std::mt19937_64 &rng, bool print_blocks, MiningMode mode = MiningMode::parallel);

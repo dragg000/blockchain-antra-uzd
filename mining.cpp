@@ -1,10 +1,14 @@
 #include "mining.hpp"
 #include "validation.hpp"
 #include <algorithm>
+#include <atomic>
+#include <chrono>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <set>
 #include <stdexcept>
+#include <thread>
 #include <unordered_set>
 #include <utility>
 
@@ -97,6 +101,94 @@ size_t mine_candidates(std::vector<Candidate> &candidates, uint64_t start_budget
     throw std::runtime_error("Joks kandidatas nerado tinkamo nonce per leistinas eiles");
 }
 
+// Vieno kandidato darbas per viena eile, vykdomas atskiroje gijoje.
+// `first_found` - maziausias numeris kandidato, kuris sioje eileje jau rado nonce.
+static void mine_turn(Candidate &candidate, size_t index, uint64_t budget, std::atomic<size_t> &first_found)
+{
+    // Kasama nedideliais gabalais, kad tarp ju butu galima pasitikrinti, ar dar verta testi.
+    const uint64_t chunk = 256;
+
+    candidate.turns++;
+    uint64_t left = budget;
+    while (left > 0)
+    {
+        if (first_found.load() < index)
+        {
+            candidate.stopped = true;
+            return;
+        }
+
+        uint64_t attempts = 0;
+        double seconds = 0.0;
+        const bool found = candidate.block.mine(std::min(chunk, left), attempts, seconds);
+
+        candidate.attempts += attempts;
+        candidate.seconds += seconds;
+        left -= attempts;
+
+        if (found)
+        {
+            candidate.found = true;
+
+            // Irasomas mazesnis is dvieju numeriu, net jei kita gija rado tuo paciu metu.
+            size_t current = first_found.load();
+            while (index < current && !first_found.compare_exchange_weak(current, index))
+            {
+            }
+            return;
+        }
+    }
+}
+
+// Uztikrina, kad visos paleistos gijos butu sulauktos ir tada, kai kuriant kita gija ivyksta klaida.
+struct JoinOnExit
+{
+    std::vector<std::thread> &threads;
+
+    ~JoinOnExit()
+    {
+        for (std::thread &thread : threads)
+        {
+            if (thread.joinable())
+                thread.join();
+        }
+    }
+};
+
+size_t mine_candidates_parallel(std::vector<Candidate> &candidates, uint64_t start_budget, size_t max_passes)
+{
+    const size_t nobody = candidates.size();
+    uint64_t budget = start_budget;
+
+    for (size_t pass = 0; pass < max_passes; pass++)
+    {
+        std::atomic<size_t> first_found(nobody);
+
+        {
+            std::vector<std::thread> threads;
+            JoinOnExit join{threads};
+            threads.reserve(candidates.size());
+
+            for (size_t i = 0; i < candidates.size(); i++)
+            {
+                if (candidates[i].selection.selected.empty())
+                    continue;
+
+                threads.emplace_back(mine_turn, std::ref(candidates[i]), i, budget, std::ref(first_found));
+            }
+        } // cia sulaukiamos visos gijos
+
+        // Laimetojas nustatomas tik pasibaigus visoms gijoms, pagrindineje gijoje.
+        const size_t winner = first_found.load();
+        if (winner != nobody)
+            return winner;
+
+        budget *= 2;
+    }
+
+    throw std::runtime_error("Joks kandidatas nerado tinkamo nonce per leistinas eiles");
+}
+
 void remove_from_pool(std::vector<Transaction> &pool, const std::vector<Transaction> &to_remove)
 {
     if (to_remove.empty())
@@ -138,8 +230,12 @@ static void print_block(const Blockchain &chain, const std::vector<Candidate> &c
     {
         const Candidate &candidate = candidates[i];
         const char *outcome = "nerado";
-        if (candidate.found)
+        if (i == winner_index)
             outcome = "laimejo";
+        else if (candidate.found)
+            outcome = "rado, bet pirmenybe mazesniam numeriui";
+        else if (candidate.stopped)
+            outcome = "sustabdytas";
         else if (candidate.turns == 0)
             outcome = "nekase";
 
@@ -158,7 +254,8 @@ MiningResult run_mining(
     BalanceState &balances,
     Blockchain &chain,
     std::mt19937_64 &rng,
-    bool print_blocks)
+    bool print_blocks,
+    MiningMode mode)
 {
     MiningResult result;
     result.wins.assign(candidates_per_block, 0);
@@ -207,7 +304,13 @@ MiningResult run_mining(
             candidates.push_back(Candidate{std::move(selection), std::move(block)});
         }
 
-        size_t winner_index = mine_candidates(candidates, candidate_start_budget, candidate_max_passes);
+        const auto mining_start = std::chrono::steady_clock::now();
+        const size_t winner_index =
+            mode == MiningMode::parallel
+                ? mine_candidates_parallel(candidates, candidate_start_budget, candidate_max_passes)
+                : mine_candidates(candidates, candidate_start_budget, candidate_max_passes);
+        result.mining_wall_seconds +=
+            std::chrono::duration<double>(std::chrono::steady_clock::now() - mining_start).count();
         const Candidate &winner = candidates[winner_index];
 
         // Laimetojas tikrinamas is naujo: nuoroda, versija, tx_root, sudetingumas, PoW

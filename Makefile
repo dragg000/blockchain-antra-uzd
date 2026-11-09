@@ -1,5 +1,5 @@
 CXX ?= c++
-CXXFLAGS = -std=c++17 -O2 -Wall -Wextra -I.
+CXXFLAGS = -std=c++17 -O2 -Wall -Wextra -I. -pthread
 SOURCES = setup.cpp hash.cpp merkle.cpp block_h.cpp blockchain.cpp mining.cpp validation.cpp
 HEADERS = $(wildcard *.hpp)
 
@@ -22,10 +22,15 @@ test: run_tests run_tests_v03
 run_bench: bench.cpp $(SOURCES) $(HEADERS)
 	$(CXX) $(CXXFLAGS) bench.cpp $(SOURCES) -o run_bench
 
-bench: run_bench
+run_bench_parallel: bench_parallel.cpp $(SOURCES) $(HEADERS)
+	$(CXX) $(CXXFLAGS) bench_parallel.cpp $(SOURCES) -o run_bench_parallel
+
+# run_bench yra tas pats matavimas kaip v0.2, run_bench_parallel lygina nuosekliu ir lygiagretu kasima.
+bench: run_bench run_bench_parallel
 	./run_bench
+	./run_bench_parallel
 
 clean:
-	rm -f blockchain run_tests run_tests_v03 run_bench
+	rm -f blockchain run_tests run_tests_v03 run_bench run_bench_parallel
 
 .PHONY: all test bench clean

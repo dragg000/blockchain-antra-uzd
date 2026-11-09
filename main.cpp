@@ -39,11 +39,24 @@ int main(int argc, char *argv[])
     const uint64_t selection_seed = 3;
     const uint32_t difficulty = 3;
     uint64_t transaction_count = 10000;
-    if (argc > 1 && !parse_transaction_count(argv[1], transaction_count))
+    MiningMode mode = MiningMode::parallel;
+    for (int i = 1; i < argc; i++)
     {
-        std::cout << "Netinkamas transakciju skaicius: " << argv[1] << "\n"
-                  << "Naudojimas: ./blockchain [transakciju skaicius nuo 1 iki 1000000]\n";
-        return 2;
+        const std::string argument = argv[i];
+        if (argument == "--nuosekliai")
+        {
+            mode = MiningMode::sequential;
+        }
+        else if (argument == "--lygiagreciai")
+        {
+            mode = MiningMode::parallel;
+        }
+        else if (!parse_transaction_count(argument, transaction_count))
+        {
+            std::cout << "Netinkamas argumentas: " << argument << "\n"
+                      << "Naudojimas: ./blockchain [transakciju skaicius nuo 1 iki 1000000] [--nuosekliai | --lygiagreciai]\n";
+            return 2;
+        }
     }
 
     std::vector<User> users = generate_users(user_seed);
@@ -69,7 +82,7 @@ int main(int argc, char *argv[])
     MiningResult result;
     try
     {
-        result = run_mining(pool, balances, bakugan, rng, true);
+        result = run_mining(pool, balances, bakugan, rng, true, mode);
     }
     catch (const std::runtime_error &error)
     {
@@ -95,10 +108,13 @@ int main(int argc, char *argv[])
               << "  bendras laikas:         " << std::chrono::duration<double>(end - start).count() << " s\n";
 
     std::cout << "\nKandidatai\n"
+              << "  kasimo budas:            "
+              << (mode == MiningMode::parallel ? "lygiagretus, kiekvienas kandidatas savo gijoje" : "nuoseklus, viena gija") << "\n"
               << "  kandidatu vienam blokui: " << candidates_per_block << "\n"
               << "  pradinis biudzetas:      " << candidate_start_budget << " bandymu per eile\n"
               << "  visu kandidatu bandymai: " << result.candidate_attempts << "\n"
-              << "  visu kandidatu laikas:   " << result.candidate_seconds << " s\n"
+              << "  visu kandidatu laikas:   " << result.candidate_seconds << " s (giju darbo laiko suma)\n"
+              << "  kasimo trukme:           " << result.mining_wall_seconds << " s (pagal laikrodi)\n"
               << "  biudzetas dvigubintas:   " << result.budget_raises << " k.\n"
               << "  laimeti blokai:         ";
     for (size_t i = 0; i < result.wins.size(); i++)

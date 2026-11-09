@@ -2,3 +2,4 @@ blockchain
 run_tests
 run_bench
 run_tests_v03
+run_bench_parallel
