@@ -89,7 +89,7 @@ def main():
         subprocess.run(["tar", "-x", "-C", baseline], input=archive, check=True)
         commit = run(["git", "rev-list", "-n", "1", BASELINE_TAG], ROOT).stdout.strip()
         head = run(["git", "rev-parse", "HEAD"], ROOT).stdout.strip()
-        dirty = run(["git", "status", "--porcelain"], ROOT).stdout.strip() != ""
+        dirty = run(["git", "status", "--porcelain", "--untracked-files=no"], ROOT).stdout.strip() != ""
         compiler = run(["c++", "--version"], ROOT).stdout.splitlines()[0]
 
         print("v0.2 ir v0.3 palyginimas")
