@@ -581,6 +581,284 @@ static void test_mine_candidates_gives_up()
     CHECK(candidates[1].attempts == 0);
 }
 
+// Atskiras hex dekodavimas testams, kad Merkle saknis butu perskaiciuota nepriklausomai nuo programos kodo.
+static std::string test_hex_to_bytes(const std::string &hex)
+{
+    const std::string digits = "0123456789abcdef";
+    std::string bytes;
+    for (size_t i = 0; i + 1 < hex.size(); i += 2)
+    {
+        bytes.push_back(static_cast<char>(digits.find(hex[i]) * 16 + digits.find(hex[i + 1])));
+    }
+    return bytes;
+}
+
+// H(kairiojo vaiko baitai || desiniojo vaiko baitai)
+static Hash parent_of(const Hash &left, const Hash &right)
+{
+    return hashTextUtf8(test_hex_to_bytes(left) + test_hex_to_bytes(right));
+}
+
+static Hash root_of(const std::vector<Transaction> &transactions)
+{
+    return Block(Block_h(std::string(64, '0'), "", 1001, 2, 3, 0), transactions).calculateTxRoot();
+}
+
+static void test_merkle_tree()
+{
+    std::cout << "Merkle medis: 0, 1, 2, 3 ir 5 transakcijos\n";
+    const Key A = key("A");
+    const Key B = key("B");
+    std::vector<Transaction> t;
+    for (uint64_t i = 0; i < 5; i++)
+    {
+        t.push_back(make_transaction(A, B, 10 + i, i));
+    }
+    std::vector<Hash> id;
+    for (const Transaction &transaction : t)
+    {
+        id.push_back(transaction.get_transaction_id());
+    }
+
+    // Tuscias blokas (genesis): tuscios baitu sekos maisa.
+    CHECK(root_of({}) == hashTextUtf8(""));
+    CHECK(Blockchain(3).tip().get_header().get_tx_root() == hashTextUtf8(""));
+
+    // 1 lapas: jis pats yra saknis.
+    CHECK(root_of({t[0]}) == id[0]);
+
+    // 2 lapai: viena pora.
+    CHECK(root_of({t[0], t[1]}) == parent_of(id[0], id[1]));
+
+    // 3 lapai: treciasis poruojamas su savo kopija.
+    CHECK(root_of({t[0], t[1], t[2]}) == parent_of(parent_of(id[0], id[1]), parent_of(id[2], id[2])));
+
+    // 5 lapai: penktasis poruojamas su kopija, tada jo tevas dar karta poruojamas su savo kopija.
+    const Hash h01 = parent_of(id[0], id[1]);
+    const Hash h23 = parent_of(id[2], id[3]);
+    const Hash h44 = parent_of(id[4], id[4]);
+    CHECK(root_of(t) == parent_of(parent_of(h01, h23), parent_of(h44, h44)));
+
+    // Saknis yra 64 hex simboliu ir ta pati skaiciuojant dar karta.
+    CHECK(isHex64(root_of(t)));
+    CHECK(root_of(t) == root_of(t));
+
+    // Bloko konstruktorius iraso ta pacia sakni i antraste.
+    Block block(Block_h(std::string(64, '0'), "", 1001, 2, 3, 0), t);
+    CHECK(block.get_header().get_tx_root() == root_of(t));
+
+    // Sukeitus dvieju skirtingu transakciju tvarka, saknis pasikeicia.
+    CHECK(root_of({t[1], t[0]}) != root_of({t[0], t[1]}));
+    CHECK(root_of({t[0], t[1], t[2], t[4], t[3]}) != root_of(t));
+
+    // Pakeitus transakcijos turini ir perskaiciavus jos ID, saknis pasikeicia.
+    std::vector<Transaction> changed = t;
+    changed[2] = make_transaction(A, B, 999, 2);
+    CHECK(changed[2].get_transaction_id() != id[2]);
+    CHECK(root_of(changed) != root_of(t));
+
+    // Zinoma tokio medzio savybe: neporinio mazgo dubliavimas reiskia, kad [a, b, c] ir [a, b, c, c]
+    // duoda ta pacia sakni. Tai ne maisos kolizija, o medzio taisykles pasekme. Grandine vis tiek
+    // nepriima antrojo bloko, nes jame kartojasi transakcijos ID.
+    const std::vector<Transaction> repeated_last = {t[0], t[1], t[2], t[2]};
+    CHECK(root_of({t[0], t[1], t[2]}) == root_of(repeated_last));
+    std::vector<User> users = small_users();
+    BalanceState balances(users);
+    Blockchain chain(3);
+    uint64_t attempts = 0;
+    double seconds = 0.0;
+    Block with_repeat = chain.minePendingTransactions(repeated_last, attempts, seconds);
+    CHECK(with_repeat.hasValidProofOfWork());
+    CHECK(!chain.add_block(with_repeat, balances));
+    CHECK(chain.height() == 0 && balances.get_balance(A) == 100);
+}
+
+static bool has_id(const std::vector<Transaction> &transactions, const Hash &id)
+{
+    for (const Transaction &transaction : transactions)
+    {
+        if (transaction.get_transaction_id() == id)
+            return true;
+    }
+    return false;
+}
+
+static void test_build_candidates()
+{
+    std::cout << "Penki kandidatai: bendra pradine busena, atskiros laikinos kopijos\n";
+    const size_t count = 400;
+    std::vector<User> users = generate_users(1);
+    std::vector<Transaction> pool = generate_transactions(2, users, count);
+    BalanceState balances(users);
+    const Bakugan start_total = balances.sum();
+    Blockchain chain(3);
+    std::mt19937_64 rng(3);
+
+    std::vector<Selection> selections = build_candidates(5, pool, balances, rng, chain.get_transaction_ids());
+    CHECK(selections.size() == 5);
+
+    // Kandidatu sudarymas nekeicia nei fondo, nei patvirtintu balansu.
+    CHECK(pool.size() == count);
+    CHECK(balances.sum() == start_total);
+    bool balances_untouched = true;
+    for (const User &user : users)
+    {
+        balances_untouched = balances_untouched && balances.get_balance(user.get_key()) == user.get_balance();
+    }
+    CHECK(balances_untouched);
+
+    bool sizes_ok = true;
+    bool no_repeats_inside = true;
+    bool each_fits_alone = true;
+    bool all_from_pool = true;
+    for (const Selection &selection : selections)
+    {
+        sizes_ok = sizes_ok && selection.selected.size() == 100;
+
+        std::set<Hash> ids;
+        // Kiekvienas kandidatas atskirai turi tilpti i pradinius balansus, savo tvarka.
+        BalanceState replay(users);
+        for (const Transaction &transaction : selection.selected)
+        {
+            no_repeats_inside = no_repeats_inside && ids.insert(transaction.get_transaction_id()).second;
+            each_fits_alone = each_fits_alone && replay.apply(transaction);
+            all_from_pool = all_from_pool && has_id(pool, transaction.get_transaction_id());
+        }
+    }
+    CHECK(sizes_ok);
+    CHECK(no_repeats_inside);
+    CHECK(each_fits_alone);
+    CHECK(all_from_pool);
+
+    // Kandidatai skiriasi vienas nuo kito, bet gali persidengti.
+    bool all_different = true;
+    size_t shared_with_first = 0;
+    for (size_t i = 0; i < selections.size(); i++)
+    {
+        for (size_t j = i + 1; j < selections.size(); j++)
+        {
+            all_different = all_different &&
+                            root_of(selections[i].selected) != root_of(selections[j].selected);
+        }
+    }
+    for (const Transaction &transaction : selections[1].selected)
+    {
+        if (has_id(selections[0].selected, transaction.get_transaction_id()))
+            shared_with_first++;
+    }
+    CHECK(all_different);
+    CHECK(shared_with_first > 0);
+    CHECK(shared_with_first < 100);
+
+    // Visi kandidatai remiasi tuo paciu prev_hash ir grandines sudetingumu.
+    bool same_parent = true;
+    for (const Selection &selection : selections)
+    {
+        const Block_h header = chain.prepare_block(selection.selected).get_header();
+        same_parent = same_parent && header.get_prev_hash() == chain.tip().calculateHash() &&
+                      header.get_difficulty() == chain.get_difficulty() && header.get_nonce() == 0;
+    }
+    CHECK(same_parent);
+
+    // Tas pats seed duoda tuos pacius kandidatus.
+    std::mt19937_64 again_rng(3);
+    std::vector<Selection> again = build_candidates(5, pool, balances, again_rng, chain.get_transaction_ids());
+    bool same_again = again.size() == selections.size();
+    for (size_t i = 0; same_again && i < again.size(); i++)
+    {
+        same_again = root_of(again[i].selected) == root_of(selections[i].selected);
+    }
+    CHECK(same_again);
+}
+
+static void test_losing_candidates_do_not_mix_state()
+{
+    std::cout << "Nelaimeje kandidatai nekeicia busenos\n";
+    const size_t count = 400;
+    std::vector<User> users = generate_users(1);
+    std::vector<Transaction> pool = generate_transactions(2, users, count);
+    BalanceState balances(users);
+    Blockchain chain(3);
+    std::mt19937_64 rng(3);
+
+    // Vienas ratas ranka, tais paciais zingsniais kaip run_mining.
+    std::vector<Candidate> candidates;
+    for (const Selection &selection : build_candidates(5, pool, balances, rng, chain.get_transaction_ids()))
+    {
+        candidates.push_back(Candidate{selection, chain.prepare_block(selection.selected)});
+    }
+    const size_t winner = mine_candidates(candidates, candidate_start_budget, candidate_max_passes);
+    CHECK(chain.add_block(candidates[winner].block, balances));
+    remove_from_pool(pool, candidates[winner].selection.selected);
+    remove_from_pool(pool, candidates[winner].selection.rejected);
+
+    // Balansai lygus tam, kas gaunama pritaikius tik laimetojo transakcijas pradinei busenai.
+    BalanceState expected(users);
+    bool winner_replays = true;
+    for (const Transaction &transaction : candidates[winner].selection.selected)
+    {
+        winner_replays = winner_replays && expected.apply(transaction);
+    }
+    bool only_winner_applied = winner_replays;
+    for (const User &user : users)
+    {
+        only_winner_applied = only_winner_applied &&
+                              balances.get_balance(user.get_key()) == expected.get_balance(user.get_key());
+    }
+    CHECK(only_winner_applied);
+    CHECK(balances.sum() == balances.get_initial_total());
+
+    // Grandineje yra tik laimetojo ID.
+    CHECK(chain.height() == 1);
+    CHECK(chain.get_transaction_ids().size() == candidates[winner].selection.selected.size());
+
+    // Transakcijos, kurias atrinko tik nelaimeje kandidatai, liko fonde ir nepateko i grandine.
+    size_t loser_only = 0;
+    bool loser_only_still_pending = true;
+    for (size_t i = 0; i < candidates.size(); i++)
+    {
+        if (i == winner)
+            continue;
+        for (const Transaction &transaction : candidates[i].selection.selected)
+        {
+            const Hash id = transaction.get_transaction_id();
+            if (has_id(candidates[winner].selection.selected, id) || has_id(candidates[winner].selection.rejected, id))
+                continue;
+            loser_only++;
+            loser_only_still_pending = loser_only_still_pending && has_id(pool, id) &&
+                                       chain.get_transaction_ids().count(id) == 0;
+        }
+    }
+    CHECK(loser_only > 0);
+    CHECK(loser_only_still_pending);
+    CHECK(pool.size() == count - candidates[winner].selection.selected.size() - candidates[winner].selection.rejected.size());
+
+    // Nelaimejusio kandidato blokas nebetinka: jis remiasi senu prev_hash.
+    const size_t loser = winner == 0 ? 1 : 0;
+    uint64_t attempts = 0;
+    double seconds = 0.0;
+    Block loser_block = candidates[loser].block;
+    loser_block.mine(attempts, seconds);
+    const Bakugan sum_before = balances.sum();
+    CHECK(!chain.add_block(loser_block, balances));
+    CHECK(chain.height() == 1);
+    CHECK(balances.sum() == sum_before);
+
+    // Visas paleidimas: kiekviena bloka laimejo lygiai vienas kandidatas.
+    MiningResult result = run_mining(pool, balances, chain, rng, false);
+    size_t wins = 0;
+    for (size_t won : result.wins)
+    {
+        wins += won;
+    }
+    CHECK(result.wins.size() == candidates_per_block);
+    CHECK(wins == chain.height() - 1);
+    CHECK(result.candidate_attempts > 0);
+    CHECK(balances.sum() == balances.get_initial_total());
+    CHECK(pool.empty());
+    CHECK(chain.get_transaction_ids().size() == candidates[winner].selection.selected.size() + result.included);
+}
+
 int main()
 {
     test_validation();
@@ -601,6 +879,9 @@ int main()
     test_budget_mining();
     test_mine_candidates();
     test_mine_candidates_gives_up();
+    test_merkle_tree();
+    test_build_candidates();
+    test_losing_candidates_do_not_mix_state();
 
     std::cout << "\nPatikros: " << checks << ", nepavyko: " << failures << "\n";
     return failures == 0 ? 0 : 1;
