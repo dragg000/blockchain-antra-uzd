@@ -14,7 +14,13 @@ run_tests: tests/tests.cpp $(SOURCES) $(HEADERS)
 test: run_tests
 	./run_tests
 
-clean:
-	rm -f blockchain run_tests
+run_bench: bench.cpp $(SOURCES) $(HEADERS)
+	$(CXX) $(CXXFLAGS) bench.cpp $(SOURCES) -o run_bench
 
-.PHONY: all test clean
+bench: run_bench
+	./run_bench
+
+clean:
+	rm -f blockchain run_tests run_bench
+
+.PHONY: all test bench clean
