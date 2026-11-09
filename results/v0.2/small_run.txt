@@ -1,0 +1,66 @@
+Blokas #1
+  transakcijos:  100
+  prev_hash:     b435f01f2902175d6d5ef175eee41d98bd0be80461135eb342ffbf6d72a2f380
+  tx_root:       7701d1fbad95a0ad7dc2f249d73aed93e1ee010e978139f450f7264a4e7e0862
+  hash:          000fd2e6ef2d672ae5250df28db1db3cc6db8b618fbac83b5c52c4516cf27feb
+  difficulty:    3
+  nonce:         1389
+  bandymai:      1390
+  kasimo laikas: 0.00223021 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.003203  nerado
+                  2           100      1      1390   0.002230  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #2
+  transakcijos:  100
+  prev_hash:     000fd2e6ef2d672ae5250df28db1db3cc6db8b618fbac83b5c52c4516cf27feb
+  tx_root:       a03fae7c20ef21f50c84319787d046e6a01264d5865140f017bab4f67480d78a
+  hash:          000219ec203434ae141c2dacc47b44211fdf9025078def2d5645bc8860a8805a
+  difficulty:    3
+  nonce:         228
+  bandymai:      229
+  kasimo laikas: 0.000362167 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1           100      1      2000   0.003293  nerado
+                  2           100      1       229   0.000362  laimejo
+                  3           100      0         0   0.000000  nekase
+                  4           100      0         0   0.000000  nekase
+                  5           100      0         0   0.000000  nekase
+Blokas #3
+  transakcijos:  50
+  prev_hash:     000219ec203434ae141c2dacc47b44211fdf9025078def2d5645bc8860a8805a
+  tx_root:       037968127d6bbb0d22ee44de1eed2d4a4f4204ab9b1dff96c4735c7ac8263bed
+  hash:          000c331f06b384d9fcb273acb06b7c58ac6171f29cfe64e722b4683af52535bc
+  difficulty:    3
+  nonce:         1616
+  bandymai:      1617
+  kasimo laikas: 0.00263754 s
+  kandidatai:    nr  transakcijos  eiles  bandymai  laikas, s  rezultatas
+                  1            50      1      1617   0.002638  laimejo
+                  2            50      0         0   0.000000  nekase
+                  3            50      0         0   0.000000  nekase
+                  4            50      0         0   0.000000  nekase
+                  5            50      0         0   0.000000  nekase
+
+Suvestine
+  vartotojai:             1000
+  transakcijos:           250
+  priimti blokai:         3
+  itrauktos transakcijos: 250
+  atmestos pries fonda:   0
+  atmestos atrenkant:     0
+  likusios transakcijos:  0
+  pradine lesu suma:      498753171
+  galutine lesu suma:     498753171
+  bendras laikas:         0.0269688 s
+
+Kandidatai
+  kandidatu vienam blokui: 5
+  pradinis biudzetas:      2000 bandymu per eile
+  visu kandidatu bandymai: 7236
+  visu kandidatu laikas:   0.0117252 s
+  biudzetas dvigubintas:   0 k.
+  laimeti blokai:          nr 1: 1, nr 2: 2, nr 3: 0, nr 4: 0, nr 5: 0
+

@@ -1,0 +1,23 @@
+Tikrinimas pries patenkant i fonda
+Serializacija
+Tas pats seed duoda tas pacias transakciju maisas
+Fiksuota antraste duoda ta pati bloko hash
+Genesis blokas
+Mazas rankomis patikrintas atvejis
+Negalima isleisti daugiau, nei turima
+Gavejo balanso perpildymas atmetamas
+Paskutinis nepilnas blokas
+Ciklas sustoja, kai nieko negalima itraukti
+Atranka atmeta netinkamas ir jau patvirtintas transakcijas
+Transakciju pridejimas i fonda
+Visas paleidimas: nera dublikatu ir neigiamu balansu
+Tas pats paleidimas duoda ta pati paskutini bloka
+Netinkami blokai atmetami, busena nesikeicia
+Kasimas su biudzetu
+Penki kandidatai kasa paeiliui
+Kasimas sustoja po leistinu eiliu
+Merkle medis: 0, 1, 2, 3 ir 5 transakcijos
+Penki kandidatai: bendra pradine busena, atskiros laikinos kopijos
+Nelaimeje kandidatai nekeicia busenos
+
+Patikros: 187, nepavyko: 0
