@@ -140,6 +140,7 @@ Each step is marked **[A]**, **[B]** or **[Both]**. "(after N)" means that step 
 
 - [ ] **34. [B] Create the branch.** Make `v0.3-dev` from `main`.
 - [ ] **35. [Both] Choose at least two directions to improve.** Each person takes one. For example, A could take validation errors or test coverage, and B mining or Merkle efficiency. Other options are code structure and memory use.
+  - **Planned: multithreaded candidate mining.** Replace step 27's taking turns with a budget by mining the five candidates on separate threads at the same time. The first thread to find a valid nonce wins and the others stop. Compare it with v0.2's sequential mining under the same conditions (step 39). The winner can then change between runs, so decide how the "same input, same chain" test handles that.
 - [ ] **36. [Both] Run the AI review and log it.** Each person does this for their own direction. Give the tool the problem, the requirements and the relevant code. Save the tool or model name, the date and the significant prompts.
 - [ ] **37. [Both] Evaluate the suggestions.** Treat each one as a hypothesis, because an AI suggestion doesn't prove anything is correct. Put each accepted change in its own commit, and have the other person read it. Describe how you verified at least one, and explain any you rejected.
 - [ ] **38. [A] Run the same tests on v0.2 and v0.3 (after 37).** Use the same starting state, data and difficulty. Compare with the frozen tag, and keep the v0.2 baseline available next to v0.3.
