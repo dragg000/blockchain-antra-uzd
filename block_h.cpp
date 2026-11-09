@@ -1,10 +1,7 @@
 #include "block_h.hpp"
 #include "hash.hpp"
+#include "merkle.hpp"
 #include <limits>
-#include <sstream>
-#include <stdexcept>
-
-std::string hexToBytes(const std::string &hex);
 
 // Antraste serializuojama kaip prev_hash|tx_root|timestamp|version|nonce|difficulty.
 // Kasant keiciasi tik nonce, todel eilute padalyta i dali iki nonce ir dali po jo.
@@ -81,60 +78,11 @@ bool Block::mine(uint64_t budget, uint64_t &attempts, double &elapsed_seconds)
 
 Hash Block::calculateTxRoot() const
 {
-
-    std::vector<Hash> level;
-
-    if (transactions.empty())
-        return hashTextUtf8("");
-
-    for (const Transaction &tx : transactions)
+    std::vector<Hash> ids;
+    ids.reserve(transactions.size());
+    for (const Transaction &transaction : transactions)
     {
-        level.push_back(tx.get_transaction_id());
+        ids.push_back(transaction.get_transaction_id());
     }
-
-    while (level.size() > 1)
-    {
-
-        std::vector<Hash> next_level;
-
-        if (level.size() % 2 == 1)
-            level.push_back(level.back());
-
-        for (size_t i = 0; i < level.size(); i += 2)
-        {
-
-            string left = hexToBytes(level[i]);
-            string right = hexToBytes(level[i + 1]);
-
-            Hash parent = hashTextUtf8(left + right);
-
-            next_level.push_back(parent);
-        }
-        level = next_level;
-    }
-    return level[0];
-}
-
-std::string hexToBytes(const std::string &hex)
-{
-    if (hex.size() % 2 != 0)
-        throw std::invalid_argument("Invalid hex length");
-
-    std::string bytes;
-
-    for (size_t i = 0; i < hex.size(); i += 2)
-    {
-        unsigned int byte;
-
-        std::stringstream ss;
-        ss << std::hex << hex.substr(i, 2);
-        ss >> byte;
-
-        if (ss.fail())
-            throw std::invalid_argument("Invalid hex character");
-
-        bytes.push_back(static_cast<char>(byte));
-    }
-
-    return bytes;
+    return merkle_root(ids);
 }

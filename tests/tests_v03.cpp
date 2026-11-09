@@ -4,6 +4,7 @@
 #include "balance_state.hpp"
 #include "blockchain.hpp"
 #include "hash.hpp"
+#include "merkle.hpp"
 #include "mining.hpp"
 #include "transaction.hpp"
 #include "user.hpp"
@@ -230,6 +231,117 @@ static void test_fast_mining_matches_slow_check()
     CHECK(same_in_pieces);
 }
 
+// Leta atskaitos realizacija, parasyta taip, kaip v0.2: kiekvienas mazgas verciamas i hex ir atgal.
+static std::string slow_hex_to_bytes(const std::string &hex)
+{
+    const std::string digits = "0123456789abcdef";
+    std::string bytes;
+    for (size_t i = 0; i + 1 < hex.size(); i += 2)
+    {
+        bytes.push_back(static_cast<char>(digits.find(hex[i]) * 16 + digits.find(hex[i + 1])));
+    }
+    return bytes;
+}
+
+static Hash slow_merkle_root(std::vector<Hash> level)
+{
+    if (level.empty())
+        return hashTextUtf8("");
+    while (level.size() > 1)
+    {
+        if (level.size() % 2 == 1)
+            level.push_back(level.back());
+        std::vector<Hash> next;
+        for (size_t i = 0; i < level.size(); i += 2)
+        {
+            next.push_back(hashTextUtf8(slow_hex_to_bytes(level[i]) + slow_hex_to_bytes(level[i + 1])));
+        }
+        level = next;
+    }
+    return level[0];
+}
+
+template <typename Function>
+static bool throws_invalid_argument(Function function)
+{
+    try
+    {
+        function();
+    }
+    catch (const std::invalid_argument &)
+    {
+        return true;
+    }
+    return false;
+}
+
+static void test_merkle_module()
+{
+    std::cout << "Merkle modulis: ta pati saknis kaip leta realizacija, grieztas ID formatas\n";
+    std::vector<User> users = generate_users(1);
+    const std::vector<Transaction> generated = generate_transactions(2, users, 130);
+    std::vector<Hash> ids;
+    for (const Transaction &transaction : generated)
+    {
+        ids.push_back(transaction.get_transaction_id());
+    }
+
+    // Visi dydziai nuo 0 iki 130 lapu.
+    bool every_size = true;
+    for (size_t size = 0; size <= ids.size(); size++)
+    {
+        const std::vector<Hash> part(ids.begin(), ids.begin() + size);
+        every_size = every_size && merkle_root(part) == slow_merkle_root(part);
+    }
+    CHECK(every_size);
+
+    // Pirmu 100 sugeneruotu transakciju saknis, kuria isspausdino v0.2 (results/v0.2/bench.txt).
+    const std::vector<Hash> hundred(ids.begin(), ids.begin() + 100);
+    CHECK(merkle_root(hundred) == "75374ba62a49cfa24d2506b07cd6ae4a06b9e21b72eea8355d12fd55367dce0d");
+    const std::vector<Transaction> first_hundred(generated.begin(), generated.begin() + 100);
+    CHECK(Block(Block_h(std::string(64, '0'), "", 1001, 2, 3, 0), first_hundred).calculateTxRoot() == merkle_root(hundred));
+
+    CHECK(merkle_root({}) == hashTextUtf8(""));
+    CHECK(merkle_root({ids[0]}) == ids[0]);
+
+    // Dekodavimas ir kodavimas atgal.
+    CHECK(digest_to_hex(decode_id(ids[0])) == ids[0]);
+    CHECK(decode_id("00ff" + std::string(60, '0'))[1] == 0xFF);
+
+    // Netinkamo formato ID: v0.2 priimdavo bet koki lygini ilgi, o "1g" tyliai perskaitydavo kaip "1".
+    const std::vector<std::string> bad_ids = {
+        "",
+        "abc",
+        "ab",
+        std::string(63, 'a'),
+        std::string(65, 'a'),
+        std::string(66, 'a'),
+        std::string(63, 'a') + "g",
+        "g" + std::string(63, 'a'),
+        "1g" + std::string(62, 'a'),
+        std::string(63, 'a') + "A",
+        std::string(63, 'a') + " ",
+        std::string(32, 'a') + "|" + std::string(31, 'a'),
+    };
+    bool all_refused = true;
+    bool blocks_refused = true;
+    for (const std::string &bad : bad_ids)
+    {
+        all_refused = all_refused && throws_invalid_argument([&] { decode_id(bad); });
+        all_refused = all_refused && throws_invalid_argument([&] { merkle_root({bad}); });
+        all_refused = all_refused && throws_invalid_argument([&] { merkle_root({ids[0], ids[1], bad}); });
+
+        // Tokio bloko neimanoma net sukurti.
+        Transaction transaction = generated[0];
+        transaction.set_transaction_id(bad);
+        blocks_refused = blocks_refused && throws_invalid_argument([&] {
+            Block(Block_h(std::string(64, '0'), "", 1001, 2, 3, 0), {generated[1], transaction});
+        });
+    }
+    CHECK(all_refused);
+    CHECK(blocks_refused);
+}
+
 struct RunResult
 {
     Hash tip;
@@ -298,6 +410,7 @@ int main()
     test_budget_is_exact();
     test_hash_stream_matches_hash();
     test_fast_mining_matches_slow_check();
+    test_merkle_module();
     test_same_chain_as_v02();
 
     std::cout << "\nv0.3 patikros: " << checks << ", nepavyko: " << failures << "\n";

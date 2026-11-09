@@ -61,6 +61,8 @@ private:
     std::string header_after_nonce() const;
 
 public:
+    // Konstruktorius pats apskaiciuoja tx_root. Jei kurios nors transakcijos ID nera
+    // 64 mazieji hex simboliai, meta std::invalid_argument: blokas su tokiu ID negali egzistuoti.
     Block(Block_h header, std::vector<Transaction> transactions)
         : header(header), transactions(transactions)
     {
