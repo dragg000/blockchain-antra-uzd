@@ -182,6 +182,54 @@ static void test_hash_stream_matches_hash()
     CHECK(digest_to_hex(half_byte) == "0f" + std::string(62, '0'));
 }
 
+static void test_fast_mining_matches_slow_check()
+{
+    std::cout << "Greitas kasimas randa ta pati nonce kaip letas tikrinimas\n";
+    bool same_nonce = true;
+    bool valid_by_slow_check = true;
+    bool same_in_pieces = true;
+    for (uint32_t difficulty = 0; difficulty <= 3; difficulty++)
+    {
+        for (uint64_t variant = 0; variant < 6; variant++)
+        {
+            const std::vector<Transaction> transactions = {make_transaction(key("A"), key("B"), 1 + variant, variant)};
+            const Block_h header(std::string(64, '0'), "", 1001 + variant, 2, difficulty, 0);
+
+            // Letas kelias: kiekvienam nonce sudaromas naujas blokas ir tikrinamas per calculateHash.
+            uint64_t expected = 0;
+            while (!Block(Block_h(header.get_prev_hash(), "", header.get_timestamp(), header.get_version(),
+                                  header.get_difficulty(), expected),
+                          transactions)
+                        .hasValidProofOfWork())
+            {
+                expected++;
+            }
+
+            uint64_t attempts = 0;
+            double seconds = 0.0;
+            Block mined(header, transactions);
+            mined.mine(attempts, seconds);
+            same_nonce = same_nonce && mined.get_header().get_nonce() == expected && attempts == expected + 1;
+            valid_by_slow_check = valid_by_slow_check && mined.hasValidProofOfWork() &&
+                                  mined.calculateHash().substr(0, difficulty) == std::string(difficulty, '0');
+
+            // Kasant mazais gabalais po 7 bandymus gaunamas tas pats nonce ir ta pati bandymu suma.
+            Block pieces(header, transactions);
+            uint64_t total = 0;
+            bool found = false;
+            while (!found)
+            {
+                found = pieces.mine(7, attempts, seconds);
+                total += attempts;
+            }
+            same_in_pieces = same_in_pieces && pieces.get_header().get_nonce() == expected && total == expected + 1;
+        }
+    }
+    CHECK(same_nonce);
+    CHECK(valid_by_slow_check);
+    CHECK(same_in_pieces);
+}
+
 struct RunResult
 {
     Hash tip;
@@ -249,6 +297,7 @@ int main()
 {
     test_budget_is_exact();
     test_hash_stream_matches_hash();
+    test_fast_mining_matches_slow_check();
     test_same_chain_as_v02();
 
     std::cout << "\nv0.3 patikros: " << checks << ", nepavyko: " << failures << "\n";

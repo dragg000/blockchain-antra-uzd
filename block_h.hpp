@@ -57,6 +57,9 @@ private:
     Block_h header;
     std::vector<Transaction> transactions;
 
+    std::string header_before_nonce() const;
+    std::string header_after_nonce() const;
+
 public:
     Block(Block_h header, std::vector<Transaction> transactions)
         : header(header), transactions(transactions)

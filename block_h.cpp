@@ -6,17 +6,24 @@
 
 std::string hexToBytes(const std::string &hex);
 
+// Antraste serializuojama kaip prev_hash|tx_root|timestamp|version|nonce|difficulty.
+// Kasant keiciasi tik nonce, todel eilute padalyta i dali iki nonce ir dali po jo.
+std::string Block::header_before_nonce() const
+{
+    return header.get_prev_hash() + "|" +
+           header.get_tx_root() + "|" +
+           std::to_string(header.get_timestamp()) + "|" +
+           std::to_string(header.get_version()) + "|";
+}
+
+std::string Block::header_after_nonce() const
+{
+    return "|" + std::to_string(header.get_difficulty());
+}
+
 Hash Block::calculateHash() const
 {
-    const std::string data =
-        header.get_prev_hash() + "|" +
-        header.get_tx_root() + "|" +
-        std::to_string(header.get_timestamp()) + "|" +
-        std::to_string(header.get_version()) + "|" +
-        std::to_string(header.get_nonce()) + "|" +
-        std::to_string(header.get_difficulty());
-
-    return hashTextUtf8(data);
+    return hashTextUtf8(header_before_nonce() + std::to_string(header.get_nonce()) + header_after_nonce());
 }
 
 bool Block::hasValidProofOfWork() const
@@ -43,18 +50,30 @@ bool Block::mine(uint64_t budget, uint64_t &attempts, double &elapsed_seconds)
 {
     auto start = std::chrono::steady_clock::now();
 
+    // Antrastes dalis iki nonce nesikeicia, todel ji sumaisoma viena karta.
+    // Kiekvienam nonce kopijuojama si tarpine busena ir pridedama tik "nonce|difficulty".
+    HashStream before_nonce;
+    before_nonce.update(header_before_nonce());
+    const std::string after_nonce = header_after_nonce();
+    const uint32_t difficulty = header.get_difficulty();
+
     bool found = false;
     attempts = 0;
+    uint64_t nonce = header.get_nonce();
     while (attempts < budget)
     {
         attempts++;
-        if (hasValidProofOfWork())
+
+        HashStream stream = before_nonce;
+        stream.update(std::to_string(nonce) + after_nonce);
+        if (has_leading_zero_nibbles(stream.digest(), difficulty))
         {
             found = true;
             break;
         }
-        header.set_nonce(header.get_nonce() + 1);
+        nonce++;
     }
+    header.set_nonce(nonce);
 
     elapsed_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
     return found;
